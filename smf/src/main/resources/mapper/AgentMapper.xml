@@ -3,5 +3,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
+        
 <mapper namespace="kr.co.smf.system.agent.AgentMapper">
+    <insert id="insertAgentInfo"
+            parameterType="kr.co.smf.system.agent.Agent">
+        <selectKey order="BEFORE" keyColumn="NO" keyProperty="uniqueNumber" resultType="int">
+            SELECT AGENT_NO_SEQ.NEXTVAL
+            FROM DUAL
+        </selectKey>
+        INSERT INTO AGENT
+            (AGENT_IP_ADDRESS, NO, USER_PHONE_NUMBER, AGENT_NAME)
+        VALUES
+            (#{agentIpAddress}, #{uniqueNumber}, #{userPhoneNumber}, #{name})
+    </insert>
+
+
+    <!-- 조회 매핑 구문 -->
+    <select id="selectAgentInfo"
+            parameterType="kr.co.smf.system.agent.Agent"
+            resultType="kr.co.smf.system.agent.Agent">
+        SELECT
+             AGENT_IP_ADDRESS
+           , NO
+           , USER_PHONE_NUMBER
+           , AGENT_NAME
+        FROM AGENT
+        <where>
+            <if test="name != null and name != ''">
+                AND NAME LIKE = '%${name}%'
+            </if>
+        </where>
+    </select>
+
+
+    
+
 </mapper>
