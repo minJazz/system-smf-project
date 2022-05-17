@@ -7,13 +7,13 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface GrowthSettingMapper {
-	public boolean insertGrowthSetting(Setting setting);
+	public int insertGrowthSetting(Setting setting);
 	
     public List<Setting> selectAllGrowthSetting(Map<String, String> condition);	
 	
     public Setting selectGrowthSetting(Setting setting);
     
-    public boolean updateGrowthSetting(Setting setting);
+    public int updateGrowthSetting(Setting setting);
 	
-    public boolean deleteGrowthSetting(Setting setting);
+    public int deleteGrowthSetting(Setting setting);
 }

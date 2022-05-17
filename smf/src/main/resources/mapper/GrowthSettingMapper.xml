@@ -4,4 +4,40 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
 <mapper namespace="kr.co.smf.system.setting.GrowthSettingMapper">
+    
+    <insert id="insertGrowthSetting" parameterType="kr.co.smf.system.setting.Setting">
+        INSERT INTO GROWTH_SETTING_INFO
+        VALUES(
+        #{userPhoneNumber}, #{name}, #{temperature}, #{humidity}, #{co2},SYSDATE
+        )        
+    </insert>
+
+	<select id="selectAllGrowthSetting" parameterType="Map"
+	    resultType="List">
+	
+	</select>
+
+	<select id="selectGrothSetting" parameterType="kr.co.smf.system.setting.Setting"
+	    resultType="kr.co.smf.system.setting.Setting">
+	    SELECT USER_PHONE_NUMBER
+	    , SETTING_NAME
+	    , TEMPERATURE
+	    , HUMIDITY
+	    , CO2
+	    , SETTING_TIME
+	    FROM GROWTH_SETTING_INFO
+	    WHERE SETTING_NAME LIKE '${name}' and USER_PHONE_NUMBER LIKE '${userPhoneNumber}
+	    
+	</select>
+	
+	<update id="updateGrowthSetting" parameterType="kr.co.smf.system.setting.Setting">
+	
+	</update>
+	
+	<delete id="deleteGrowthSetting" parameterType="kr.co.smf.system.setting.Setting">
+	    DELETE
+	    FROM GROWTH_SETTING_INFO
+	    WHERE SETTING_NAME LIKE '${name}' and USER_PHONE_NUMBER LIKE '${userPhoneNumber}'
+	</delete>	
+
 </mapper>
