@@ -8,13 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Mapper
 public interface AgentMapper {
-	public boolean insertAgentInfo(Agent agent); 
+	@Transactional
+	public int insertAgentInfo(Agent agent); 
    
 	public List<Agent> selectAllAgentInfo(Map<String, String> condition);
     
 	public Agent selectAgentInfo(Agent agent);
 
-	public boolean updateAgentInfo(Agent agent);
+	public int updateAgentInfo(Agent agent);
 	
-	public boolean deleteAgentInfo(Agent agent);
+	public int deleteAgentInfo(Agent agent);
 }

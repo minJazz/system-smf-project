@@ -3,19 +3,19 @@ package kr.co.smf.system.agent;
 import java.io.Serializable;
 
 public class Agent implements Serializable {
-	private String uniqueNumber;
 	private String agentIpAddress;
+	private int uniqueNumber;
 	private String userPhoneNumber;
 	private String name;
 
 	public Agent() {
 	}
 
-	public String getUniqueNumber() {
+	public int getUniqueNumber() {
 		return uniqueNumber;
 	}
 
-	public void setUniqueNumber(String uniqueNumber) {
+	public void setUniqueNumber(int uniqueNumber) {
 		this.uniqueNumber = uniqueNumber;
 	}
 
