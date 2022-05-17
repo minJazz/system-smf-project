@@ -4,4 +4,65 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
 <mapper namespace="kr.co.smf.system.measurement.GrowthMeasureMapper">
+    <insert id="insertGrowthMeasureInfo"
+            parameterType="Measurement">
+        INSERT INTO GROWTH_MEASURE_INFO
+            (AGENT_IP_ADDRESS, MEASURE_TIME, TEMPERATURE, HUMIDITY, CO2)
+        VALUES
+            (#{agentIpAddress}, TO_DATE(#{measureTime}, 'YYYY-MM-DD-HH24'), #{temperature}, #{humidity}, #{co2})
+    </insert>
+    
+    <select id="selectAllGrowthMeasureInfo"
+    		parameterType="Map"
+    		resultType="Measurement">
+    	SELECT AGENT_IP_ADDRESS
+             , MEASURE_TIME
+             , TEMPERATURE
+             , HUMIDITY
+             , CO2
+        FROM GROWTH_MEASURE_INFO
+        <where>
+            <if test="agentIpAddress != null and agentIpAddress != ''">
+                AND AGENT_IP_ADDRESS LIKE '%${agentIpAddress}%'
+            </if>
+            <if test="measureTime != null and measureTime != ''">
+                AND MEASURE_TIME = TO_DATE(#{measureTime}, 'YYYY-MM-DD-HH24')
+            </if>
+        </where>
+        <if test="pageNo != null and pageNo != ''">
+            LIMIT ${pageNo}, 10
+        </if>
+    </select>
+    
+    <select id="selectGrowthMeasureInfo"
+            parameterType="Measurement"
+            resultType="Measurement">
+        SELECT AGENT_IP_ADDRESS
+             , MEASURE_TIME
+             , TEMPERATURE
+             , HUMIDITY
+             , CO2
+        FROM GROWTH_MEASURE_INFO
+        <where>
+            <if test="agentIpAddress != null and agentIpAddress != ''">
+                AND AGENT_IP_ADDRESS LIKE '%${agentIpAddress}%'
+            </if>
+            <if test="measureTime != null and measureTime != ''">
+                AND MEASURE_TIME = TO_DATE(#{measureTime}, 'YYYY-MM-DD-HH24')
+            </if>
+        </where>
+    </select>
+    
+    <delete id="deleteGrowthMeasureInfo"
+    		parameterType="Measurement">
+    	DELETE FROM GROWTH_MEASURE_INFO
+    	<where>
+            <if test="agentIpAddress != null and agentIpAddress != ''">
+                AND AGENT_IP_ADDRESS LIKE '%${agentIpAddress}%'
+            </if>
+            <if test="measureTime != null and measureTime != ''">
+                AND MEASURE_TIME = TO_DATE(#{measureTime}, 'YYYY-MM-DD-HH24')
+            </if>
+        </where>
+    </delete>
 </mapper>
