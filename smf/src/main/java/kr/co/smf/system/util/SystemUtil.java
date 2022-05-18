@@ -82,17 +82,38 @@ public class SystemUtil {
         RequestBody body = RequestBody.create(JSON, json);
 		
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + "/control-request?agentIpAddress=" + agent.getAgentIpAddress())
+				.url("http://" + agent.getAgentIpAddress() + "/control-request")
+				.post(body)
                 .build();
 		
 		Response response = client.newCall(request).execute();
 		
 		ResponseBody responseBody = response.body();
 		JSONObject jsonResponse = new JSONObject(responseBody.string());
+		
+		if (!jsonResponse.getString("code").equals("200")) {
+			System.out.println("제어 요청 오류 : " + jsonResponse.getString("message"));	//TODO Logger 추가 시 변경 요망
+		}
 	}
 	
-	public void sendUserInfo(Agent agent, User user) {
+	public void sendUserInfo(Agent agent, User user) throws IOException {
+		String json = "{'agentIpAddress' : '" + agent.getAgentIpAddress() + "', "
+					 + "'userMail' : '" + user.getMail() + "'}";
+        RequestBody body = RequestBody.create(JSON, json);
 		
+		Request request = new Request.Builder()
+				.url("http://" + agent.getAgentIpAddress() + "/user-info")
+				.put(body)
+                .build();
+		
+		Response response = client.newCall(request).execute();
+		
+		ResponseBody responseBody = response.body();
+		JSONObject jsonResponse = new JSONObject(responseBody.string());
+		
+		if (!jsonResponse.getString("code").equals("200")) {
+			System.out.println("제어 요청 오류 : " + jsonResponse.getString("message"));	//TODO Logger 추가 시 변경 요망
+		}
 	}
 
 }
