@@ -15,7 +15,6 @@ public class SettingServiceImple implements SettingService {
 
 	@Override
 	public boolean addSetting(Setting setting) {
-
 		return growthSettingMapper.insertGrowthSetting(setting) == 0 ? false : true;
 	}
 
