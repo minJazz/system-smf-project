@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class Setting implements Serializable {
 	private String userPhoneNumber;
-	private String name;
+	private String settingName;
 	private double temperature;
 	private int humidity;
 	private int co2;
-	private String time;
+	private String settingTime;
 
 	public Setting() {
 	}
@@ -21,12 +21,12 @@ public class Setting implements Serializable {
 		this.userPhoneNumber = userPhoneNumber;
 	}
 
-	public String getName() {
-		return name;
+	public String getSettingName() {
+		return settingName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSettingName(String settingName) {
+		this.settingName = settingName;
 	}
 
 	public double getTemperature() {
@@ -53,11 +53,11 @@ public class Setting implements Serializable {
 		this.co2 = co2;
 	}
 
-	public String getTime() {
-		return time;
+	public String getsettingTime() {
+		return settingTime;
 	}
 
-	public void setTime(String time) {
-		this.time = time;
+	public void setsettingTime(String settingTime) {
+		this.settingTime = settingTime;
 	}
 }

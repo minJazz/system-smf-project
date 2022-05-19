@@ -8,7 +8,7 @@
     <insert id="insertGrowthSetting" parameterType="kr.co.smf.system.setting.Setting">
         INSERT INTO GROWTH_SETTING_INFO
         VALUES(
-        #{userPhoneNumber}, #{name}, #{temperature}, #{humidity}, #{co2},SYSDATE
+        #{userPhoneNumber}, #{settingName}, #{temperature}, #{humidity}, #{co2}, SYSDATE
         )        
     </insert>
 
@@ -17,7 +17,7 @@
 	
 	</select>
 
-	<select id="selectGrothSetting" parameterType="kr.co.smf.system.setting.Setting"
+	<select id="selectGrowthSetting" parameterType="kr.co.smf.system.setting.Setting"
 	    resultType="kr.co.smf.system.setting.Setting">
 	    SELECT USER_PHONE_NUMBER
 	    , SETTING_NAME
@@ -26,18 +26,24 @@
 	    , CO2
 	    , SETTING_TIME
 	    FROM GROWTH_SETTING_INFO
-	    WHERE SETTING_NAME LIKE '${name}' and USER_PHONE_NUMBER LIKE '${userPhoneNumber}
+	    WHERE USER_PHONE_NUMBER LIKE '${userPhoneNumber}' AND SETTING_NAME LIKE '${settingName}' 
 	    
 	</select>
 	
 	<update id="updateGrowthSetting" parameterType="kr.co.smf.system.setting.Setting">
-	
+	    UPDATE GROWTH_SETTING_INFO SET
+	        TEMPERATURE = #{temperature}
+	        , HUMIDITY = #{humidity}
+	        , CO2 = #{co2}
+	        , SETTING_TIME = #{settingTime}
+	    WHERE USER_PHONE_NUMBER LIKE '${userPhoneNumber}' AND SETTING_NAME LIKE '${settingName}'  
+	    
 	</update>
 	
 	<delete id="deleteGrowthSetting" parameterType="kr.co.smf.system.setting.Setting">
 	    DELETE
 	    FROM GROWTH_SETTING_INFO
-	    WHERE SETTING_NAME LIKE '${name}' and USER_PHONE_NUMBER LIKE '${userPhoneNumber}'
+	    WHERE USER_PHONE_NUMBER LIKE '${userPhoneNumber}' AND SETTING_NAME LIKE '${settingName}' 
 	</delete>	
 
 </mapper>
