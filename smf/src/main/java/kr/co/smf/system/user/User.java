@@ -3,8 +3,8 @@ package kr.co.smf.system.user;
 import java.io.Serializable;
 
 public class User implements Serializable {
-	private int uniqueNumber;
 	private String phoneNumber;
+	private int no;
 	private String password;
 	private String name;
 	private String mail;
@@ -13,20 +13,20 @@ public class User implements Serializable {
 	public User() {
 	}
 
-	public int getUniqueNumber() {
-		return uniqueNumber;
-	}
-
-	public void setUniqueNumber(int uniqueNumber) {
-		this.uniqueNumber = uniqueNumber;
-	}
-
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public int getNo() {
+		return no;
+	}
+
+	public void setNo(int no) {
+		this.no = no;
 	}
 
 	public String getPassword() {
