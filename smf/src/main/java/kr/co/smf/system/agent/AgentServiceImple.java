@@ -18,8 +18,7 @@ public class AgentServiceImple implements AgentService {
 
 	@Override
 	public List<Agent> viewAgentInfoList(Map<String, String> condition) {
-		// TODO Auto-generated method stub
-		return null;
+		return agentMapper.selectAllAgentInfo(condition);
 	}
 
 	@Override

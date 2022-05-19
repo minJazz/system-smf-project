@@ -4,19 +4,11 @@ import java.io.Serializable;
 
 public class Agent implements Serializable {
 	private String agentIpAddress;
-	private int uniqueNumber;
+	private int no;
 	private String userPhoneNumber;
-	private String name;
+	private String agentName;
 
 	public Agent() {
-	}
-
-	public int getUniqueNumber() {
-		return uniqueNumber;
-	}
-
-	public void setUniqueNumber(int uniqueNumber) {
-		this.uniqueNumber = uniqueNumber;
 	}
 
 	public String getAgentIpAddress() {
@@ -27,6 +19,14 @@ public class Agent implements Serializable {
 		this.agentIpAddress = agentIpAddress;
 	}
 
+	public int getNo() {
+		return no;
+	}
+
+	public void setNo(int no) {
+		this.no = no;
+	}
+
 	public String getUserPhoneNumber() {
 		return userPhoneNumber;
 	}
@@ -35,11 +35,11 @@ public class Agent implements Serializable {
 		this.userPhoneNumber = userPhoneNumber;
 	}
 
-	public String getName() {
-		return name;
+	public String getAgentName() {
+		return agentName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setAgentName(String agentName) {
+		this.agentName = agentName;
 	}
 }

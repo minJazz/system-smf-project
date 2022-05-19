@@ -29,13 +29,21 @@ public class AgentController {
 	
 	@GetMapping("/agent")
 	@ResponseBody
-	public List<Agent> viewAgentList(@RequestBody Map<String, String> condition) {
-		return null;
+	public List<Agent> viewAgentList(@RequestBody(required = false) Map<String, String> condition) {
+		return agentService.viewAgentInfoList(condition);
 	}
 	
 	@DeleteMapping("/agent")
-	public List<Agent> removeAgent(Map<String, String> condition) {
-		return null;
+	@ResponseBody
+	public List<Agent> removeAgent(@RequestBody Map<String, String> condition) {
+		Agent agent = new Agent();
+		agent.setAgentIpAddress(condition.get("agentIpAddress"));
+		agent.setAgentName(condition.get("agentName"));
+		agent.setNo(Integer.valueOf(condition.get("no")));
+		agent.setUserPhoneNumber(condition.get("userPhoneNumber"));
+		
+		agentService.deleteAgentInfo(agent);
+		return agentService.viewAgentInfoList(condition);
 	}
 	
 }
