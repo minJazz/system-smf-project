@@ -86,8 +86,8 @@ public class SmartFarmController {
 		for (Agent agent : agents) {
 			Map<String, String> element = new HashMap<String, String>();
 			
-			element.put("agentNo", "" + agent.getUniqueNumber());
-			element.put("agentName", agent.getName());
+			element.put("agentNo", "" + agent.getNo());
+			element.put("agentName", agent.getAgentName());
 			
 			element.put("settingTemperature", "" + settings.get(agent.getAgentIpAddress()).getTemperature());
 			element.put("settingHumidity", "" + settings.get(agent.getAgentIpAddress()).getHumidity());
