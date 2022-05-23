@@ -5,6 +5,7 @@
         
         
 <mapper namespace="kr.co.smf.system.agent.AgentMapper">
+    <!-- 데이터 삽입 매핑 구문 -->
     <insert id="insertAgentInfo"
             parameterType="kr.co.smf.system.agent.Agent">
         <selectKey order="BEFORE" keyColumn="NO" keyProperty="no" resultType="int">
@@ -17,8 +18,7 @@
             (#{agentIpAddress}, #{no}, #{userPhoneNumber}, #{name})
     </insert>
 
-
-    <!-- 조회 매핑 구문 -->
+    <!-- 조건 조회 매핑 구문 -->
     <select id="selectAgentInfo"
             parameterType="kr.co.smf.system.agent.Agent"
             resultType="kr.co.smf.system.agent.Agent">
@@ -34,7 +34,8 @@
             </if>
         </where>
     </select>
-    
+
+    <!-- 목록 조회 매핑 구문 -->    
     <select id="selectAllAgentInfo"
             parameterType="Map"
             resultType="Agent">
@@ -48,8 +49,27 @@
            <if test="agentName != null and agentName != ''">
                AND AGENT_NAME LIKE = '%${agentName}%'
            </if>
+           <if test="userPhoneNumber != null and userPhoneNumber != ''">
+               AND USER_PHONE_NUMBER = #{userPhoneNumber}
+           </if>
         </where>
+        <if test="pageNo != null and pageNo != ''">
+            LIMIT ${pageNo}, 10
+        </if>
     </select>
     
-
+    <!-- 데이터 수정 매핑 구문 --> 
+    <update id="updateAgentInfo"
+            parameterType="Map">
+        UPDATE AGENT
+        <set>
+            <if test="agentName != null and agentName !=''">
+                AGENT_NAME = ${agentName}
+            </if>
+            <if test="previousAgentIpAddress != null and previousAgentIpAddress != ''" >
+                AGENT_IP_ADDRESS = ${previousAgentIpAddress}
+            </if>
+        </set>
+        WHERE USER_PHONE_NUMBER = ${userPhoneNumber}
+    </update>
 </mapper>

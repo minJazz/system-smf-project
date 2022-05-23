@@ -13,7 +13,7 @@ public interface AgentService {
 
 	public Agent viewAgentInfo(Agent agent);
 
-	public boolean editAgentInfo(Agent agent);
+	public boolean editAgentInfo(Map<String, String> agent);
 
 	public boolean deleteAgentInfo(Agent agent);
 }

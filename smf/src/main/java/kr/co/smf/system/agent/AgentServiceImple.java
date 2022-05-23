@@ -23,20 +23,17 @@ public class AgentServiceImple implements AgentService {
 
 	@Override
 	public Agent viewAgentInfo(Agent agent) {
-		// TODO Auto-generated method stub
-		return null;
+		return agentMapper.selectAgentInfo(agent);
 	}
 
 	@Override
-	public boolean editAgentInfo(Agent agent) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean editAgentInfo(Map<String, String> agent) {
+		return agentMapper.updateAgentInfo(agent) == 1 ? true : false;
 	}
 
 	@Override
 	public boolean deleteAgentInfo(Agent agent) {
-		// TODO Auto-generated method stub
-		return false;
+		return agentMapper.deleteAgentInfo(agent) == 1 ? true : false;
 	}
 
 }
