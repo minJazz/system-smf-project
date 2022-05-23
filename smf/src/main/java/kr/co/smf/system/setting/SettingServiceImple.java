@@ -20,8 +20,7 @@ public class SettingServiceImple implements SettingService {
 
 	@Override
 	public List<Setting> viewSettingList(Map<String, String> condition) {
-		// TODO Auto-generated method stub
-		return null;
+		return growthSettingMapper.selectAllGrowthSetting(condition);
 	}
 
 	@Override
@@ -31,19 +30,12 @@ public class SettingServiceImple implements SettingService {
 
 	@Override
 	public boolean editSetting(Setting setting) {
-		// TODO Auto-generated method stub
-		return false;
+		return growthSettingMapper.updateGrowthSetting(setting) == 0 ? false : true;
 	}
 
 	@Override
 	public boolean deleteSetting(Setting setting) {
 		return growthSettingMapper.deleteGrowthSetting(setting) == 0 ? false : true;
-	}
-
-	@Override
-	public List<Setting> viewNowSetting(User user) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

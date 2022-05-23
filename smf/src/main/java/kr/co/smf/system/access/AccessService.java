@@ -6,6 +6,5 @@ import kr.co.smf.system.user.User;
 
 @Service
 public interface AccessService {
-	public boolean login(User user);
-	public void logout();
+	public User login(User user);
 }
