@@ -16,7 +16,7 @@ public interface AgentMapper {
 	public Agent selectAgentInfo(Agent agent);
 
 	@Transactional
-	public int updateAgentInfo(Agent agent);
+	public int updateAgentInfo(Map<String, String> agent);
 	
 	@Transactional
 	public int deleteAgentInfo(Agent agent);
