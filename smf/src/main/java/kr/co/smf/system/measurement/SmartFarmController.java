@@ -62,7 +62,7 @@ public class SmartFarmController {
 						settings.put(agent.getAgentIpAddress(), systemUtil.requestNowGrowthSetting(agent));
 						measurements.put(agent.getAgentIpAddress(), systemUtil.requestRealTimeGrowthInfo(agent));
 					} catch (IOException e) {
-						e.printStackTrace();// TODO 예외 처리
+						e.printStackTrace(); // TODO 예외 처리
 					}
 				}
 			});
@@ -105,7 +105,7 @@ public class SmartFarmController {
 
 	@GetMapping("/smartfarm/{uniqueNumber}")
 	public ModelAndView viewSmartFarm(Agent agent) {
-		ModelAndView mav = new ModelAndView("agent/view");
+		ModelAndView mav = new ModelAndView("smartfarm/view");
 		mav.addObject(agentService.viewAgentInfo(agent));
 		
 		return mav;
