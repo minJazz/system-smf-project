@@ -2,7 +2,6 @@ package kr.co.smf.system.measurement;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -114,7 +113,11 @@ public class SmartFarmController {
 	@PutMapping("/smartfarm")
 	@ResponseBody
 	public Agent editSmartFarm(@RequestBody Agent agent) {
-		agentService.editAgentInfo(agent);
+		Map<String, String> condition  = new HashMap<String, String>();
+		condition.put("agentIpAddress", agent.getAgentIpAddress());
+		condition.put("agentName", agent.getAgentName());
+		
+		agentService.editAgentInfo(condition);
 		
 		return agent;		//혹시 문제가 생길 경우 조회한 다음 조회한 결과를 반환할 것
 	}
