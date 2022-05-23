@@ -1,22 +1,18 @@
 package kr.co.smf.system.access;
 
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Service;
 
 import kr.co.smf.system.user.User;
+import kr.co.smf.system.user.UserMapper;
 
 @Service
 public class AccessServiceImple implements AccessService {
+	@Mapper
+	UserMapper userMapper;
 
 	@Override
-	public boolean login(User user) {
-		// TODO Auto-generated method stub
-		return false;
+	public User login(User user) {
+		return userMapper.selectUserInfo(user);
 	}
-
-	@Override
-	public void logout() {
-		// TODO Auto-generated method stub
-
-	}
-
 }

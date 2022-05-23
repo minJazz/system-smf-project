@@ -1,6 +1,8 @@
 package kr.co.smf.system.setting;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -22,37 +24,41 @@ public class GrowthSettingController {
 
 	@GetMapping
 	public ModelAndView viewSetting(HttpSession httpSession) {
-		String phoneNumber = (String) httpSession.getAttribute("phoneNumber");
-		System.out.println("성공");
-
-		return null;
+		//String phoneNumber = (String) httpSession.getAttribute("phoneNumber");
+		Map<String, String> condition = new HashMap<String,String>();
+		condition.put("userPhoneNumber","01051199268");//value를 phoneNumber로 수정해야함
+		List<Setting> settingList = settingService.viewSettingList(condition);
+		
+		System.out.println(settingList.size());
+		
+		ModelAndView modelAndView = new ModelAndView("");
+		modelAndView.addObject("settingList", settingList);
+		return modelAndView;
 	}
 
 	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-//	@ResponseBody // json 형식으로 송신하겠다 @RequestBody는 json 형식으로 받겠다.
 	public Setting viewSetting(Setting setting) {
-		System.out.println(setting.getSettingName());
-		Setting checkSetting = settingService.viewSetting(setting);
-		System.out.println(checkSetting.getUserPhoneNumber()+checkSetting.getCo2()+checkSetting.getSettingName());
-		return null;
+		return settingService.viewSetting(setting);
 	}
 
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public List<Setting> updateSetting(@RequestBody Setting setting) {
-		//String phoneNumber = (String) httpSession.getAttribute("phoneNumber");
-		setting.setUserPhoneNumber("01051199268");
-
-		// 생장환경 설정 이름으로 조회 메소드를 실행하고 null이 아니면 update문, null이면 insert 문 실행
-		boolean check = settingService.addSetting(setting);//
-		System.out.println(check);
+		boolean check = false;
 		
+		if(settingService.viewSetting(setting) == null) {
+			check = settingService.addSetting(setting);
+			System.out.println("새로운 생장환경 설정 값 추가 여부 " +check);
+		} else {
+			check = settingService.editSetting(setting);
+			System.out.println("생장환경 설정 값 변경 여부 " +check);
+		}
+
 		//return을 통해  갱신한 정보를 다시 조회하여 반환해야한다.
 		return null;
 	}
 
 	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public List<Setting> deleteSetting(@RequestBody Setting setting) {
-		//String phoneNumber = (String) httpSession.getAttribute("phoneNumber");
 		setting.setUserPhoneNumber("01051199268");
 
 		settingService.deleteSetting(setting);// 삭제

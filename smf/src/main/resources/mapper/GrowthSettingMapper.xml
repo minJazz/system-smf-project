@@ -13,7 +13,15 @@
     </insert>
 
 	<select id="selectAllGrowthSetting" parameterType="Map"
-	    resultType="List">
+	    resultType="kr.co.smf.system.setting.Setting">
+	    SELECT USER_PHONE_NUMBER
+	    , SETTING_NAME
+	    , TEMPERATURE
+	    , HUMIDITY
+	    , CO2
+	    , SETTING_TIME
+	    FROM GROWTH_SETTING_INFO
+	    WHERE USER_PHONE_NUMBER LIKE '${userPhoneNumber}'
 	
 	</select>
 
@@ -35,9 +43,8 @@
 	        TEMPERATURE = #{temperature}
 	        , HUMIDITY = #{humidity}
 	        , CO2 = #{co2}
-	        , SETTING_TIME = #{settingTime}
+	        , SETTING_TIME = SYSDATE
 	    WHERE USER_PHONE_NUMBER LIKE '${userPhoneNumber}' AND SETTING_NAME LIKE '${settingName}'  
-	    
 	</update>
 	
 	<delete id="deleteGrowthSetting" parameterType="kr.co.smf.system.setting.Setting">

@@ -18,6 +18,4 @@ public interface SettingService {
 	public boolean editSetting(Setting setting);
 
 	public boolean deleteSetting(Setting setting);
-
-	public List<Setting> viewNowSetting(User user);
 }
