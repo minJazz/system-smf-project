@@ -7,14 +7,14 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface UserMapper {
-	public boolean insertUserInfo(User user);
+	public int insertUserInfo(User user);
 	
     public List<User> selectAllUserInfo(Map<String, String> condition);
     
 	public User selectUserInfo(User user);
 	
-	public boolean updateUserInfo(User user);
+	public int updateUserInfo(User user);
 	
-	public boolean deleteUserInfo(User user);
+	public int deleteUserInfo(User user);
 	
 }

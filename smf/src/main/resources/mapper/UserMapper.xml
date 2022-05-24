@@ -4,4 +4,84 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
         
 <mapper namespace="kr.co.smf.system.user.UserMapper">
+    <!-- 데이터 삽입 매핑 구문 -->
+    <insert id="insertUserInfo"
+            parameterType="User">
+        <selectKey order="BEFORE" keyColumn="NO" keyProperty="no" resultType="int">
+            SELECT USER_NO_SEQ.NEXTVAL
+            FROM DUAL
+        </selectKey>
+        INSERT INTO SERVICE_USER
+            (PHONE_NUMBER, NO, PASSWORD, NAME, MAIL, PERMISSION)
+        VALUES
+            (#{phoneNumber}, #{no}, #{password}, #{name}, #{mail}, #{permission})
+    </insert>
+    
+    <!-- 조건 조회 매핑 구문 -->    
+    <select id="selectUserInfo"
+            parameterType="User"
+            resultType="User">
+        SELECT 
+            PHONE_NUMBER
+          , NO
+          , PASSWORD
+          , NAME
+          , MAIL
+          , PERMISSION
+        FROM SERVICE_USER
+        WHERE PHONE_NUMBER = #{phoneNumber}
+    </select>
+    
+    <!-- 목록 조회 매핑 구문 -->
+    <select id="selectAllUserInfo"
+            parameterType="User"
+            resultType="User">
+        SELECT
+            PHONE_NUMBER
+          , NO
+          , PASSWORD
+          , NAME
+          , MAIL
+          , PERMISSION
+        FROM SERVICE_USER
+        <where>
+            <if test="name != null and name != ''">
+                AND NAME LIKE = '%${name}%'
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                AND PHONE_NUMBER LIKE = '%${phoneNumber}%'
+            </if>
+            <if test="mail != null and mail != ''">
+                AND MAIL LIKE = '%${mail}%'
+            </if>
+        </where>
+    </select>
+    
+    <!-- 데이터 수정 매핑 구문 -->
+    <update id="updateUserInfo"
+            parameterType="User">
+        UPDATE SERVICE_USER
+        <set>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                PHONE_NUMBER = #{phoneNumber},
+            </if>
+            <if test="password != null and password != ''">
+                PASSWORD = #{password},
+            </if>
+            <if test="mail != null and mail != ''">
+                MAIL = #{mail},
+            </if>
+        </set>
+    </update>
+    
+    <!-- 데이터 삭제 매핑 구문  -->
+    <delete id="deleteUserInfo"
+            parameterType="User">
+        DELETE FROM SERVICE_USER
+        <where>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                AND PHONE_NUMBER = #{phoneNumber}
+            </if>
+        </where>
+    </delete>
 </mapper>
