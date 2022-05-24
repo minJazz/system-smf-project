@@ -7,7 +7,7 @@
 <mapper namespace="kr.co.smf.system.agent.AgentMapper">
     <!-- 데이터 삽입 매핑 구문 -->
     <insert id="insertAgentInfo"
-            parameterType="kr.co.smf.system.agent.Agent">
+            parameterType="Agent">
         <selectKey order="BEFORE" keyColumn="NO" keyProperty="no" resultType="int">
             SELECT AGENT_NO_SEQ.NEXTVAL
             FROM DUAL
@@ -20,8 +20,8 @@
 
     <!-- 조건 조회 매핑 구문 -->
     <select id="selectAgentInfo"
-            parameterType="kr.co.smf.system.agent.Agent"
-            resultType="kr.co.smf.system.agent.Agent">
+            parameterType="Agent"
+            resultType="Agent">
         SELECT
              AGENT_IP_ADDRESS
            , NO
@@ -73,12 +73,23 @@
         UPDATE AGENT
         <set>
             <if test="agentName != null and agentName !=''">
-                AGENT_NAME = ${agentName}
+                AGENT_NAME = #{agentName},
             </if>
             <if test="previousAgentIpAddress != null and previousAgentIpAddress != ''" >
-                AGENT_IP_ADDRESS = ${previousAgentIpAddress}
+                AGENT_IP_ADDRESS = #{nowAgentIpAddress},
             </if>
         </set>
-        WHERE USER_PHONE_NUMBER = ${userPhoneNumber}
+        WHERE AGENT_IP_ADDRESS = #{previousAgentIpAddress}
     </update>
+    
+    <!-- 데이터 삭제 매핑 구문 -->
+    <delete id="deleteAgentInfo"
+            parameterType="Agent">
+        DELETE FROM AGENT
+        <where>
+            <if test="agentIpAddress != null and agentIpAddress != ''">
+                AND AGENT_IP_ADDRESS = #{agent}
+            </if>
+        </where>
+    </delete>
 </mapper>
