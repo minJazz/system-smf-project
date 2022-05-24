@@ -48,12 +48,13 @@ public class AgentController {
 	
 	@PutMapping
 	@ResponseBody
-	public Map<String, String> editAgent(@RequestBody Map<String, String> agentInfo) {		// TODO 매퍼 보고 변경 요망
+	public Map<String, String> editAgent(
+			@RequestBody Map<String, String> agentInfo) {
 	    
 		if ("empty".equals(agentInfo.get("previousAgentIpAddress"))) {
 			Agent agent = new Agent();
 			agent.setAgentIpAddress(agentInfo.get("nowAgentIpAddress"));
-			agent.setUserPhoneNumber("userPhoneNumber");
+			agent.setUserPhoneNumber(agentInfo.get("userPhoneNumber"));
 			
 			agentService.addAgentInfo(agent);
 			
@@ -94,5 +95,4 @@ public class AgentController {
 		
 		return agentService.viewAgentInfoList(condition);
 	}
-	
 }

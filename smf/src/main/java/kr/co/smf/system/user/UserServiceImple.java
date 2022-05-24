@@ -9,37 +9,31 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImple implements UserService {
     @Autowired
-    private UserMapper UserMapper;
-	
+    private UserMapper userMapper;
 	
 	@Override
 	public boolean addUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		return userMapper.insertUserInfo(user) == 1 ? true : false;
 	}
 
 	@Override
 	public List<User> viewUserList(Map<String, String> condition) {
-		// TODO Auto-generated method stub
-		return null;
+		return userMapper.selectAllUserInfo(condition);
 	}
 
 	@Override
 	public User viewUser(User user) {
-		// TODO Auto-generated method stub
-		return null;
+		return userMapper.selectUserInfo(user);
 	}
 
 	@Override
 	public boolean editUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		return userMapper.updateUserInfo(user) == 1 ? true : false;
 	}
 
 	@Override
 	public boolean deleteUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
+		return userMapper.deleteUserInfo(user) == 1 ? true : false;
 	}
 
 }
