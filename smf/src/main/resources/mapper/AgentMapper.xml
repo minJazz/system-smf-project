@@ -39,23 +39,32 @@
     <select id="selectAllAgentInfo"
             parameterType="Map"
             resultType="Agent">
-        SELECT
-            AGENT_IP_ADDRESS
-           , NO
-           , USER_PHONE_NUMBER
-           , AGENT_NAME
-        FROM AGENT
+        SELECT AGENT_IP_ADDRESS
+	           , NO
+	           , USER_PHONE_NUMBER
+	           , AGENT_NAME
+        FROM (
+        	SELECT
+	            AGENT_IP_ADDRESS
+	           , NO
+	           , USER_PHONE_NUMBER
+	           , AGENT_NAME
+	           , ROWNUM
+        	FROM AGENT
+	        <where>
+	           <if test="agentName != null and agentName != ''">
+	               AND AGENT_NAME LIKE = '%${agentName}%'
+	           </if>
+	           <if test="userPhoneNumber != null and userPhoneNumber != ''">
+	               AND USER_PHONE_NUMBER = #{userPhoneNumber}
+	           </if>
+	        </where>
+	    )
         <where>
-           <if test="agentName != null and agentName != ''">
-               AND AGENT_NAME LIKE = '%${agentName}%'
-           </if>
-           <if test="userPhoneNumber != null and userPhoneNumber != ''">
-               AND USER_PHONE_NUMBER = #{userPhoneNumber}
-           </if>
+        	<if test="pageNo != null and pageNo != ''">
+        		AND ROWNUM BETWEEN ${pageNo} * 10 AND (${pageNo} + 1) * 10
+        	</if>
         </where>
-        <if test="pageNo != null and pageNo != ''">
-            LIMIT ${pageNo}, 10
-        </if>
     </select>
     
     <!-- 데이터 수정 매핑 구문 --> 

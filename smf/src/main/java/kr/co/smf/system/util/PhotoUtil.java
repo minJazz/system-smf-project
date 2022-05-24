@@ -16,7 +16,7 @@ import kr.co.smf.system.measurement.Measurement;
 
 @Component
 public class PhotoUtil {
-	private static final String IMAGEPATH = "image" + File.pathSeparator;
+	private static final String IMAGEPATH = "image" + File.separator;
 	
 	@Autowired
 	private GrowthMeasureMapper growthMeasureMapper; 
@@ -30,7 +30,7 @@ public class PhotoUtil {
 				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
 		
 		String directoryPath = IMAGEPATH 
-				+ measurement.getAgentIpAddress() + File.pathSeparator 
+				+ measurement.getAgentIpAddress() + File.separator 
 				+ measureDate.toString();
 		
 		File directory = new File(directoryPath);
@@ -40,7 +40,7 @@ public class PhotoUtil {
         }
 		
 		File file = new File(
-				directoryPath + File.pathSeparator
+				directoryPath + File.separator
 				+ measureTime.getHour()
 				+ "(" + multipartFile.getOriginalFilename() + ")"
 				+ ".jpg"); // ex) 192.168.120.0\\13(1).jpg
@@ -56,8 +56,8 @@ public class PhotoUtil {
 				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
 		
 		String path = IMAGEPATH 
-				+ condition.get("agentIpAddress") + File.pathSeparator 
-				+ measureDate.toString() + File.pathSeparator
+				+ condition.get("agentIpAddress") + File.separator 
+				+ measureDate.toString() + File.separator
 				+ measureTime.getHour() + "(" + condition.get("camera") + ")" + ".jpg";
 		
 		return new File(path);
@@ -70,9 +70,18 @@ public class PhotoUtil {
 		LocalDateTime measureTime = LocalDateTime.parse(measurement.getMeasureTime(), 
 				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
 		
-		String directoryPath = IMAGEPATH 
-				+ measurement.getAgentIpAddress() + File.pathSeparator 
-				+ measureDate.toString();
-		// TODO 여기부터 (제성이)
+		File directory = new File(IMAGEPATH 
+				+ measurement.getAgentIpAddress() + File.separator 
+				+ measureDate.toString());
+		
+		File[] folderList = directory.listFiles();
+		
+		for (int j = 0; j < folderList.length; j++) {
+			folderList[j].delete();
+		}
+				
+		if(folderList.length == 0 && directory.isDirectory()) { 
+			directory.delete();
+		}
 	}
 }
