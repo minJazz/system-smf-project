@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,12 +15,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.smf.system.agent.Agent;
 import kr.co.smf.system.agent.AgentService;
 import kr.co.smf.system.setting.Setting;
+import kr.co.smf.system.util.Navigator;
 import kr.co.smf.system.util.PhotoUtil;
 import kr.co.smf.system.util.SystemUtil;
 
@@ -36,6 +39,9 @@ public class SmartFarmController {
 	
 	@Autowired
 	private PhotoUtil photoUtil;
+	
+	@Autowired
+	private Navigator navigator;
 
 	@GetMapping("/smartfarm")
 	public ModelAndView viewSmartFarmList() {
@@ -46,12 +52,13 @@ public class SmartFarmController {
 
 	@GetMapping(path = "/smartfarm", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public List<Map<String, String>> viewSmartFarmList(@RequestBody Map<String, String> condition) {
+	public List<Map<String, String>> viewSmartFarmList(@RequestParam Map<String, String> condition) {
+		
 		List<Map<String, String>> responseList = new ArrayList<Map<String, String>>();
 
 		List<Agent> agents = agentService.viewAgentInfoList(condition);
-		Map<String, Setting> settings = new HashMap<String, Setting>();
-		Map<String, Measurement> measurements = new HashMap<String, Measurement>();
+		Map<String, Setting> settings = new ConcurrentHashMap<String, Setting>();
+		Map<String, Measurement> measurements = new ConcurrentHashMap<String, Measurement>();
 		
 		for (Agent agent : agents) {
 			Thread thread = new Thread(new Runnable() {
@@ -66,9 +73,10 @@ public class SmartFarmController {
 				}
 			});
 			
-			thread.start();
+			//thread.start();		// TODO 에이전트 구현 시 주석 해제
 		}
-
+		
+		/*
 		while (true) {
 			if (agents.size() == settings.size() && agents.size() == measurements.size()) {
 				break;
@@ -81,23 +89,44 @@ public class SmartFarmController {
 				
 			}
 		}
-		
+		*/		// TODO 에이전트 구현 시 주석 해제
 		for (Agent agent : agents) {
 			Map<String, String> element = new HashMap<String, String>();
 			
 			element.put("agentNo", "" + agent.getNo());
 			element.put("agentName", agent.getAgentName());
-			
-			element.put("settingTemperature", "" + settings.get(agent.getAgentIpAddress()).getTemperature());
-			element.put("settingHumidity", "" + settings.get(agent.getAgentIpAddress()).getHumidity());
-			element.put("settingCo2", "" + settings.get(agent.getAgentIpAddress()).getCo2());
-			
-			element.put("measureTemperature", "" + measurements.get(agent.getAgentIpAddress()).getTemperature());
-			element.put("measureHumidity", "" + measurements.get(agent.getAgentIpAddress()).getHumidity());
-			element.put("measureCo2", "" + measurements.get(agent.getAgentIpAddress()).getCo2());
-			
+			/*
+			 * element.put("settingTemperature", "" +
+			 * settings.get(agent.getAgentIpAddress()).getTemperature());
+			 * element.put("settingHumidity", "" +
+			 * settings.get(agent.getAgentIpAddress()).getHumidity());
+			 * element.put("settingCo2", "" +
+			 * settings.get(agent.getAgentIpAddress()).getCo2());
+			 * 
+			 * element.put("measureTemperature", "" +
+			 * measurements.get(agent.getAgentIpAddress()).getTemperature());
+			 * element.put("measureHumidity", "" +
+			 * measurements.get(agent.getAgentIpAddress()).getHumidity());
+			 * element.put("measureCo2", "" +
+			 * measurements.get(agent.getAgentIpAddress()).getCo2());
+			 */		// TODO 에이전트 구현 시 주석 해제
 			responseList.add(element);
 		}
+		
+		Map<String, String> allCondition = new HashMap<String, String>();
+		
+		allCondition.putAll(condition);
+		
+		allCondition.remove("pageNo");
+		
+		List<Agent> allAgents = agentService.viewAgentInfoList(allCondition);
+		
+		String navigatorHtml = navigator.getNavigator(
+				allAgents.size(), Integer.parseInt(condition.get("pageNo")));
+		
+		responseList.get(0).put("navigator", navigatorHtml);
+		
+		System.out.println(">>>>  " + responseList);
 		
 		return responseList;
 	}
@@ -114,12 +143,12 @@ public class SmartFarmController {
 	@ResponseBody
 	public Agent editSmartFarm(@RequestBody Agent agent) {
 		Map<String, String> condition  = new HashMap<String, String>();
-		condition.put("agentIpAddress", agent.getAgentIpAddress());
+		condition.put("previousAgentIpAddress", agent.getAgentIpAddress());
 		condition.put("agentName", agent.getAgentName());
 		
 		agentService.editAgentInfo(condition);
 		
-		return agent;		//혹시 문제가 생길 경우 조회한 다음 조회한 결과를 반환할 것
+		return agent;		//TODO 혹시 문제가 생길 경우 조회한 다음 조회한 결과를 반환할 것
 	}
 
 	@PutMapping("/control")

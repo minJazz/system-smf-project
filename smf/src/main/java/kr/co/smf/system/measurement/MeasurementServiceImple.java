@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +39,14 @@ public class MeasurementServiceImple implements MeasurementService {
 
 	@Override
 	public List<Measurement> viewRealTimeMeasurement(List<Agent> agents) {
-		List<Measurement> measurements = new ArrayList<Measurement>();
+		List<Measurement> measurements = new Vector<Measurement>();
 
 		for (Agent agent : agents) {
 			Thread thread = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						measurements.add(systemUtil.requestRealTimeGrowthInfo(agent));// 리스트에 add하는게 동기화 문제 생길수도..?
+						measurements.add(systemUtil.requestRealTimeGrowthInfo(agent));
 					} catch (IOException e) {
 						e.printStackTrace();
 						// 요청 중 예외 발생...

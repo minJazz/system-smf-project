@@ -16,22 +16,32 @@
     		parameterType="Map"
     		resultType="Measurement">
     	SELECT AGENT_IP_ADDRESS
-             , MEASURE_TIME
-             , TEMPERATURE
-             , HUMIDITY
-             , CO2
-        FROM GROWTH_MEASURE_INFO
+	             , MEASURE_TIME
+	             , TEMPERATURE
+	             , HUMIDITY
+	             , CO2
+	    FROM (
+	    	SELECT AGENT_IP_ADDRESS
+	             , MEASURE_TIME
+	             , TEMPERATURE
+	             , HUMIDITY
+	             , CO2
+	             , ROWNUM
+	        FROM GROWTH_MEASURE_INFO
+	        <where>
+	            <if test="agentIpAddress != null and agentIpAddress != ''">
+	                AND AGENT_IP_ADDRESS LIKE '%${agentIpAddress}%'
+	            </if>
+	            <if test="measureTime != null and measureTime != ''">
+	                AND MEASURE_TIME = TO_DATE(#{measureTime}, 'YYYY-MM-DD-HH24')
+	            </if>
+	        </where>
+        )
         <where>
-            <if test="agentIpAddress != null and agentIpAddress != ''">
-                AND AGENT_IP_ADDRESS LIKE '%${agentIpAddress}%'
-            </if>
-            <if test="measureTime != null and measureTime != ''">
-                AND MEASURE_TIME = TO_DATE(#{measureTime}, 'YYYY-MM-DD-HH24')
-            </if>
+        	<if test="pageNo != null and pageNo != ''">
+        		AND ROWNUM BETWEEN ${pageNo} * 10 AND (${pageNo} + 1) * 10
+        	</if>
         </where>
-        <if test="pageNo != null and pageNo != ''">
-            LIMIT ${pageNo}, 10
-        </if>
     </select>
     
     <select id="selectGrowthMeasureInfo"
