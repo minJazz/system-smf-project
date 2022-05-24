@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,37 +20,46 @@ public class AccessController {
 	AccessService accessService;
 
 	@GetMapping("/login")
-	public ModelAndView login(HttpSession httpSession, boolean remember) {
+	public ModelAndView login(HttpSession httpSession,
+			@CookieValue(value = "REMEMBER", required = false) Cookie cookie) {
+		ModelAndView modelAndView = new ModelAndView("access/login");
 
-		return null;
+		if (cookie != null) {
+			modelAndView.addObject("remember", cookie.getValue());
+			modelAndView.addObject("check", "checked");
+		}
+
+		return modelAndView;
 	}
 
 	@PostMapping("/login")
 	public ModelAndView login(User user, HttpSession httpSession, HttpServletResponse response, boolean remember) {
-		User checkUser = accessService.login(user);
+//		User checkUser = accessService.login(user);
+		User checkUser = user; // 삭제하고 위에 주석을 풀어야함
 		ModelAndView modelAndView = null;
 
 		if (checkUser != null) {
-			httpSession.setAttribute("userPhoneNumber", checkUser.getPhoneNumber());
+			httpSession.setAttribute("user", checkUser);
 
 			if ("U".equals(checkUser.getPermission())) {
-				modelAndView = new ModelAndView("/user");
+				modelAndView = new ModelAndView("smartfarm/user");
 			} else {
-				modelAndView = new ModelAndView("/userinfolist");
+				modelAndView = new ModelAndView("smartfarm/smartfarm");
 			}
 
-			Cookie rememberCookie = new Cookie("REMEMBER", user.getPhoneNumber());
+			Cookie rememberCookie = new Cookie("REMEMBER", checkUser.getPhoneNumber());
+
 			if (remember) {
 				rememberCookie.setMaxAge(60 * 60 * 24 * 30);
 			} else {
 				rememberCookie.setMaxAge(0);
 			}
+
 			response.addCookie(rememberCookie);
-			modelAndView.addObject("user", checkUser);
 
 			return modelAndView;
 		} else {
-			modelAndView = new ModelAndView("/login");
+			modelAndView = new ModelAndView("access/login");
 		}
 
 		return modelAndView;
