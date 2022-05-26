@@ -43,7 +43,7 @@ public class AccessController {
 			if ("U".equals(String.valueOf(checkUser.getPermission()))) {
 				modelAndView = new ModelAndView(new RedirectView("/user"));
 			} else {
-				modelAndView = new ModelAndView("/smartfarm");
+				modelAndView = new ModelAndView(new RedirectView("/smartfarm"));
 			}
 
 			Cookie rememberCookie = new Cookie("REMEMBER", checkUser.getPhoneNumber());
