@@ -12,7 +12,6 @@
     <input type="button" value="사용자 정보 목록" />
     <br/>
     
-    
     <h2>사용자 정보 목록</h2>
     <hr/>
     <table>
@@ -20,10 +19,10 @@
             <td>
               <div style="border:1; float:left; width:100px%;">
               	     검색 조건
-	              <select name="name" placeholder="이름">
-	                  <option value="0">이름</option>
-	                  <c:forEach items="${list}" var="row" varStatus="object">
-	                      <option value="${object.count}">${row.name}</option>
+	              <select id="name">
+	                  <option value="0" selected>이름</option>
+	                  <c:forEach items="${list}" var="row">
+	                      <option value="${row.name}">${row.name}</option>
 	                  </c:forEach>
 	              </select>
 	              <input type="text" id="phoneNumber" placeholder="전화번호" />
@@ -31,8 +30,8 @@
               </div>
               <div style="border:1; float:right; width: 100px%;">
                   <a href="/user/form"><input type="button" value="등록"></a>
-                  <a href="/user/${no}/form"><input type="button" value="수정"></a>
-                  <a><input type="button" value="삭제"></a>
+                  <input type="button" value="수정" onclick="editClick(tableValue)">
+                  <a><input type="button" value="삭제" onclick="deleteClick(tableValue)"></a>
               </div>
             </td>
         </tr>
@@ -40,28 +39,49 @@
     
     <br/>
     <div id="table"></div>
-    <table border=1>
-        <th>번호</th>
-        <th>이름</th>
-        <th>연락처</th>
-        <th>이메일</th>
-        <th>선택</th>
-    </table>
     
     <script type="text/javascript">
+        function deleteClick(val) {
+        	for (var i = 0; i < val.length; i++) {
+        	    var radio = document.getElementById("radio" + i);
+                if (radio.checked) {
+                    console.log(radio);
+        	        console.log(val[i].innerText.split("\t")[0]);
+        	        
+        	        var no = val[i].innerText.split("\t")[0];
+        	        window.location.href = "http://localhost/user/" + no + "/form";
+                }
+        	}
+        }
+        function editClick(val) {
+        	console.log(radio);
+        	for (var i = 0; i < val.length; i++) {
+        	    var radio = document.getElementById("radio" + i);
+                if (radio.checked) {
+                    console.log(radio);
+        	        console.log(val[i].innerText.split("\t")[0]);
+        	        
+        	        var no = val[i].innerText.split("\t")[0];
+        	        window.location.href = "http://localhost/user/" + no + "/form";
+                }
+        	}
+        }
+    
+    
 		function rendering() {
 			xmlHttp = new XMLHttpRequest();
 			
-// 			var input = {
-// 				title : document.getElementById("input").value
-// 			};
-
-// 			var json = JSON.stringify(input);
-// 			console.log(json);
-
-			xmlHttp.open('GET', 'http://localhost/topics?title='+document.getElementById("input").value, true);
-			xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			xmlHttp.send();
+			var name = document.getElementById("name").value;
+			var phoneNumber = document.getElementById("phoneNumber").value;
+			
+			if (name != 0 && phoneNumber == null) {
+				xmlHttp.open('GET', 'http://localhost/user?name='+name, true);
+			} else if (name == 0 && phoneNumber != null) {
+				xmlHttp.open('GET', 'http://localhost/user?phoneNumber='+phoneNumber, true);
+			} else {
+				xmlHttp.open('GET', 'http://localhost/user?name='+name+'&phoneNumber='+phoneNumber, true);
+			}
+			
 			xmlHttp.onreadystatechange = function() {
 				if (this.status == 200 && this.readyState == this.DONE) {
 					//sql문으로 읽어온 json 형식의 문자열
@@ -70,22 +90,23 @@
 					var parseData = JSON.parse(data);
 					console.log(parseData);
 					//html 변환 작업
-					var text = "<table border='1'> <tr> <th>번호</th> <th>제목</th> <th>내용</th> </tr>";
+				    var text = "<table border='1'> <thead> <tr> <th>번호</th> <th>이름</th> <th>연락처</th> <th>이메일</th> <th>선택</th> </tr> </thead>";
 					for (var i = 0; i < parseData.length; i++) {
-						text += "<tr><td>"
-								+ parseData[i].no
-								+ "</th><td><a href='/topics/" + parseData[i].no + "' >"
-								+ parseData[i].title + "</a></td><td>"
-								+ parseData[i].note + "</td></tr>";
+						text += "<tbody id = 'tableValue'><tr><td>"
+								+ (i+1)
+								+ "</th><td><a href='/agent/" + parseData[i].no + "' >"
+								+ parseData[i].name + "</a></td><td>"
+								+ parseData[i].phoneNumber + "</td>"
+								+ "<td>" + parseData[i].mail + "</td>"
+								+ "<td><input type='radio' id=\"radio" + i +  "\" class='checkBtn' </td></tr></tbody>";
 					}
 					text += "</table>";
 					document.getElementById("table").innerHTML = text;
-					//Object.keys(parseData[i]) -> no, title, note
-					//Object.values(parseData[i]) -> 내용
 				}
 			}
+			xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+			xmlHttp.send();
 		}
 	</script>
-    
 </body>
 </html>
