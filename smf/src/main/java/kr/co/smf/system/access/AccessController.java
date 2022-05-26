@@ -58,7 +58,7 @@ public class AccessController {
 
 			return modelAndView;
 		} else {
-			modelAndView = new ModelAndView("access/login");
+			modelAndView = new ModelAndView("/login");
 		}
 
 		return modelAndView;

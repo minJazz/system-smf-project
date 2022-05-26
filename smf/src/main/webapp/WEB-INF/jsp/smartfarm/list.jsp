@@ -43,6 +43,8 @@
 	</div>
 </div>
 
+<input type="hidden" id="userPhone" value="${user.phoneNumber}"></input>
+
 <br/>
 <br/>
 <br/>
@@ -58,6 +60,8 @@
 <br/>
 <br/>
 <br/>
+
+<hr/>
 
 <div class="right-box">
 <table>
@@ -151,13 +155,13 @@
 	}
 	
 	function search() { 
-		console.log(pageNo);
+		console.log(document.getElementById('userPhone').value);
 		
 		xmlRequest = new XMLHttpRequest();
 		
 		xmlRequest.open("GET", "/smartfarm?" 
 				+ "agentName=" + document.getElementById('agentName').value
-				// + "&userPhoneNumber=" + ${user.phoneNumber}	TODO SESSTION 추가되면 주석 제거
+				// + "&userPhoneNumber=" + document.getElementById('userPhone').value	TODO SESSTION 추가되면 주석 제거
 				+ "&pageNo=" + pageNo
 				, true);
 		xmlRequest.onreadystatechange = getData;

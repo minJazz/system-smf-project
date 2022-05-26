@@ -46,6 +46,8 @@
 	</div>
 </div>
 
+
+
 <br/>
 <br/>
 <br/>
@@ -57,25 +59,37 @@
 <body>
 
 <div class="left-box">
-	<form:form action="/smartfarm" method="put">
-		<input type="text" name="agentName" value="${agent.agentName}" style="font-size:25px; width:200px;"/>
+	<div>
+		<input type="text" name="agentName" id="agentName" value="${agent.agentName}" style="font-size:25px; width:200px; onKeypress="javascript:if(event.keyCode==13) {}" />
 		<input type="hidden" name="agentIpAddress" id="agentIpAddress" value="${agent.agentIpAddress}" />
-		<input type="submit" value="수정" style="font-size:20px;" />
-	</form:form>
-	
+		<input type="button" value="수정" style="font-size:20px;" onclick="edit()" />
+		<input type="text" style="display:none;"/>
+	</div>
+	<script>
+		function edit() {
+			$.ajax({
+				url: "${pageContext.request.contextPath}/smartfarm",
+				method: "put",
+				data: {
+					agentIpAddress : document.getElementById("agentIpAddress").value,
+					agentName : document.getElementById("agentName").value
+				}
+			});
+		}
+	</script>
 </div>
 
 <br/>
 <br/>
 <br/>
 
+<hr/>
+
 <table>
 	<tr>
-	<form method="PUT" action="/control">
+	<div>
 		<td>
 			<div class="left-box">
-				
-			
 				<table border='2' height="300">
 					<tr>
 						<td style="text-align:center;">생장환경 요소</td>
@@ -121,7 +135,7 @@
 					</script>
 				</tr>
 				<tr>
-					<td width="30"><a href="#" onclick=upTemp() ><h2> + </h2></a></td>
+					<td width="30"><a href="#" onclick=upTemp() ><h1> + </h1></a></td>
 					<script>
 						function upTemp() {
 							let temp = parseFloat(document.getElementById("temperature").value);
@@ -130,7 +144,7 @@
 							initSelect();
 						}
 					</script>
-					<td width="20"><a href="#" onclick=downTemp() ><h2> - </h2></a></td>
+					<td width="20"><a href="#" onclick=downTemp() ><h1> - </h1></a></td>
 					<script>
 						function downTemp() {
 							let temp = parseFloat(document.getElementById("temperature").value);
@@ -142,7 +156,7 @@
 				</tr>
 				
 				<tr>
-					<td width="30"><a href="#" onclick=upHumi() ><h2> + </h2></a></td>
+					<td width="30"><a href="#" onclick=upHumi() ><h1> + </h1></a></td>
 					<script>
 						function upHumi() {
 							let humidity = parseFloat(document.getElementById("humidity").value);
@@ -151,7 +165,7 @@
 							initSelect();
 						}
 					</script>
-					<td width="20"><a href="#" onclick=downHumi() ><h2> - </h2></a></td>
+					<td width="20"><a href="#" onclick=downHumi() ><h1> - </h1></a></td>
 					<script>
 						function downHumi() {
 							let humidity = parseFloat(document.getElementById("humidity").value);
@@ -163,7 +177,7 @@
 				</tr>
 				
 				<tr>
-					<td width="30"><a href="#" onclick=upCo2() ><h2> + </h2></a></td>
+					<td width="30"><a href="#" onclick=upCo2() ><h1> + </h1></a></td>
 					<script>
 						function upCo2() {
 							let co2 = parseFloat(document.getElementById("co2").value);
@@ -173,7 +187,7 @@
 						}
 						
 					</script>
-					<td width="20"><a href="#" onclick=downCo2() ><h2> - </h2></a></td>
+					<td width="20"><a href="#" onclick=downCo2() ><h1> - </h1></a></td>
 					<script>
 						function downCo2() {
 							let co2 = parseFloat(document.getElementById("co2").value);
@@ -183,12 +197,27 @@
 						}
 						
 					</script>
-					<td><input type="submit" value="제어"/></td>
+					<td><input type="button" value="제어" onclick="control()"/></td>
+					<script>
+						function control() {
+							$.ajax({
+								url: "${pageContext.request.contextPath}/control",
+								method: "put",
+								data: {
+									agentIpAddress : document.getElementById("agentIpAddress").value,
+									temperature : document.getElementById("temperature").value,
+									humidity : document.getElementById("humidity").value,
+									co2 : document.getElementById("co2").value
+								}
+							});
+						}
+					</script>
+					
 				</tr>
 			</table>
 				<input type="hidden" name="agentIpAddress" value="${agent.agentIpAddress}"/>
 		</td>
-	</form>
+	</div>
 	
 		<td style="vertical-align:top;">
 			<table>
@@ -199,6 +228,9 @@
 						<script>
 							function nowTime() {
 								moveCondition = "now";
+								
+								document.getElementById("photoTime").value = "00";
+								document.getElementById("camera").value = "1";
 								
 								photoCall();
 							}
@@ -282,8 +314,57 @@
 				</table>
 		</td>
 	</tr>
-</table>
+	<tr>
+		<td rowspan="3">
+			<div id="measureData"></div>
+			<script>
+				measure();
+			
+				function leftPad(value) {
+				    if (value >= 10) {
+				        return value;
+				    }
 
+				    return '0' + value;
+				}
+				
+				function measure() {
+					let now = new Date();
+					let nowFormat = now.getFullYear() + "-" + leftPad(now.getMonth() + 1) + "-" + leftPad(now.getDate());
+					
+					let startTime = new Date();
+					startTime.setFullYear(startTime.getFullYear() - 1);
+					let startTimeFormat = startTime.getFullYear() + "-" + leftPad(startTime.getMonth() + 1) + "-" + leftPad(startTime.getDate());
+					
+					$.ajax({
+			            url: "${pageContext.request.contextPath}/measurement",
+			            type: "GET",
+			            data: {
+			            	ipAddress : document.getElementById("agentIpAddress").value, 
+			            	startTime : startTimeFormat,
+			            	endTime : nowFormat
+			            },
+			            success: function (rows) {
+			            	document.getElementById("measureData").innerText = "온도" + rows[0].temperature;
+			            }
+					});
+				}
+			</script>
+		</td>
+	</tr>
+	<tr>
+		<td></td>
+		<td></td>
+		<td>
+			<table>
+				<tr>
+					<td>기준표</td>
+					<td><input type="date"/></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
 
 
 </body>

@@ -12,8 +12,18 @@
     <input type="button" value="사용자 정보 목록" />
     <br/>
     
-    <h2>사용자 정보 목록</h2>
+    <div style="float:right;">
+    	${user.name} 님
+    	<a href="/logout"><input type="button" value="로그아웃"/></a>
+    </div>
+    
+    <div>
+    <h2>사용자 정보 목록</h2> 
+    
+    </div>
+    
     <hr/>
+  	    	          
     <table>
         <tr>
             <td>
@@ -31,7 +41,7 @@
               <div style="border:1; float:right; width: 100px%;">
                   <a href="/user/form"><input type="button" value="등록"></a>
                   <input type="button" value="수정" onclick="editClick(tableValue)">
-                  <a><input type="button" value="삭제" onclick="deleteClick(tableValue)"></a>
+                  <a><input type="button" value="삭제" id="deleteBtn" onclick="deleteClick()" /></a>
               </div>
             </td>
         </tr>
@@ -40,31 +50,36 @@
     <br/>
     <div id="table"></div>
     
-    <script type="text/javascript">
-        function deleteClick(val) {
-        	for (var i = 0; i < val.length; i++) {
-        	    var radio = document.getElementById("radio" + i);
-                if (radio.checked) {
-                    console.log(radio);
-        	        console.log(val[i].innerText.split("\t")[0]);
-        	        
-        	        var no = val[i].innerText.split("\t")[0];
-        	        window.location.href = "http://localhost/user/" + no + "/form";
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    
+    <script type="text/javascript" >
+    	rendering();
+    	
+    	function deleteClick() {
+			var radioVal = $('input[name="radio"]:checked').val();
+        	
+        	var uniqueNo = "" + (radioVal+"").split("/")[1];
+        	
+        	var item = {
+            	"no" : uniqueNo
+            }
+    		$.ajax({
+                url: "${pageContext.request.contextPath}/user",
+                method: "DELETE",
+                contentType : "application/json; charset=UTF-8",
+                dataType: "JSON",
+                data: JSON.stringify(item), 
+                success: function (data) {
+                    rendering();
                 }
-        	}
-        }
+            });
+    	}
+    	
         function editClick(val) {
-        	console.log(radio);
-        	for (var i = 0; i < val.length; i++) {
-        	    var radio = document.getElementById("radio" + i);
-                if (radio.checked) {
-                    console.log(radio);
-        	        console.log(val[i].innerText.split("\t")[0]);
-        	        
-        	        var no = val[i].innerText.split("\t")[0];
-        	        window.location.href = "http://localhost/user/" + no + "/form";
-                }
-        	}
+        	var radioVal = $('input[name="radio"]:checked').val();
+        	
+        	var no = (radioVal+"").split("/")[1];
+     	    window.location.href = "http://localhost/user/" + no + "/form";
         }
     
     
@@ -92,13 +107,13 @@
 					//html 변환 작업
 				    var text = "<table border='1'> <thead> <tr> <th>번호</th> <th>이름</th> <th>연락처</th> <th>이메일</th> <th>선택</th> </tr> </thead>";
 					for (var i = 0; i < parseData.length; i++) {
-						text += "<tbody id = 'tableValue'><tr><td>"
+						text += "<tbody id = 'tableValue'><tr><th>"
 								+ (i+1)
 								+ "</th><td><a href='/agent/" + parseData[i].no + "' >"
 								+ parseData[i].name + "</a></td><td>"
 								+ parseData[i].phoneNumber + "</td>"
 								+ "<td>" + parseData[i].mail + "</td>"
-								+ "<td><input type='radio' id=\"radio" + i +  "\" class='checkBtn' </td></tr></tbody>";
+								+ "<th><input type='radio' value=\"radio/" + parseData[i].no + "\" id=\"radio/" + parseData[i].no +  "\" name=\"radio\" class='checkBtn' </th></tr></tbody>";
 					}
 					text += "</table>";
 					document.getElementById("table").innerHTML = text;
