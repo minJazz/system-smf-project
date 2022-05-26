@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,8 +32,6 @@ public class UserController {
 	
 	@PostMapping
 	public ModelAndView addUser(User user) {
-		System.out.println("---->add");
-		
 		userService.addUser(user);
 		return new ModelAndView(new RedirectView("/user"));
 	}
@@ -77,7 +76,7 @@ public class UserController {
 
 	@DeleteMapping
 	@ResponseBody
-	public List<User> removeUser(Map<String, String> condition) {
+	public List<User> removeUser(@RequestBody Map<String, String> condition) {
 		User user = new User();
 		user.setNo(Integer.valueOf(condition.get("no")));
 		
