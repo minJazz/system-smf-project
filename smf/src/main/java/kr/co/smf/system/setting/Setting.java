@@ -17,6 +17,12 @@ public class Setting implements Serializable {
 		return userPhoneNumber;
 	}
 
+	@Override
+	public String toString() {
+		return "Setting [userPhoneNumber=" + userPhoneNumber + ", settingName=" + settingName + ", temperature="
+				+ temperature + ", humidity=" + humidity + ", co2=" + co2 + ", settingTime=" + settingTime + "]";
+	}
+
 	public void setUserPhoneNumber(String userPhoneNumber) {
 		this.userPhoneNumber = userPhoneNumber;
 	}
