@@ -22,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import kr.co.smf.system.agent.Agent;
 import kr.co.smf.system.agent.AgentService;
 import kr.co.smf.system.setting.Setting;
+import kr.co.smf.system.setting.SettingService;
 import kr.co.smf.system.util.Navigator;
 import kr.co.smf.system.util.PhotoUtil;
 import kr.co.smf.system.util.SystemUtil;
@@ -42,6 +43,9 @@ public class SmartFarmController {
 	
 	@Autowired
 	private Navigator navigator;
+	
+	@Autowired
+	private SettingService settingService;
 
 	@GetMapping("/smartfarm")
 	public ModelAndView viewSmartFarmList() {
@@ -124,24 +128,48 @@ public class SmartFarmController {
 		String navigatorHtml = navigator.getNavigator(
 				allAgents.size(), Integer.parseInt(condition.get("pageNo")));
 		
-		responseList.get(0).put("navigator", navigatorHtml);
+		if (responseList.isEmpty()) {
+			responseList.add(new HashMap<String, String>());
+		}
 		
-		System.out.println(">>>>  " + responseList);
+		responseList.get(0).put("navigator", navigatorHtml);
 		
 		return responseList;
 	}
 
-	@GetMapping("/smartfarm/{uniqueNumber}")
+	@GetMapping("/smartfarm/{no}")
 	public ModelAndView viewSmartFarm(Agent agent) {
 		ModelAndView mav = new ModelAndView("smartfarm/view");
-		mav.addObject(agentService.viewAgentInfo(agent));
+		
+		agent = agentService.viewAgentInfo(agent);
+		mav.addObject(agent);
+		/*
+		 * try { mav.addObject("setting", systemUtil.requestRealTimeGrowthInfo(agent));
+		 * } catch (IOException e) { e.printStackTrace(); // TODO 예외 처리 }
+		 */
+		
+		
+		//
+		Setting setting = new Setting();
+		setting.setUserPhoneNumber("01051199268");
+		setting.setSettingName("느타리버섯");
+		mav.addObject("setting", settingService.viewSetting(setting));
+		
+		// TODO 모데이터... 삭제 예정
+		
+		
+		Map<String, String> condition = new HashMap<String, String>();
+		condition.put("userPhoneNumber", agent.getUserPhoneNumber());
+		
+		mav.addObject("settings", settingService.viewSettingList(condition));
 		
 		return mav;
 	}
 
 	@PutMapping("/smartfarm")
-	@ResponseBody
-	public Agent editSmartFarm(@RequestBody Agent agent) {
+	public Agent editSmartFarm(Agent agent) {
+		System.out.println("put!!");
+		
 		Map<String, String> condition  = new HashMap<String, String>();
 		condition.put("previousAgentIpAddress", agent.getAgentIpAddress());
 		condition.put("agentName", agent.getAgentName());
@@ -166,18 +194,11 @@ public class SmartFarmController {
 		return measurementService.viewMeasurementList(condition);
 	}
 
-	@GetMapping(path = "/photo", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public byte[] viewPhoto(@RequestBody Map<String, String> condition) {
-		File file = photoUtil.selectPhoto(condition);
+	@GetMapping(path = "/photo")
+	@ResponseBody
+	public Map<String, String> viewPhoto(@RequestParam Map<String, String> condition) {
+		Map<String, String> response = photoUtil.selectPhoto(condition);
 		
-		try {
-			FileInputStream fileInputStream = new FileInputStream(file);
-			
-			return fileInputStream.readAllBytes();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
+		return response;
 	}
 }

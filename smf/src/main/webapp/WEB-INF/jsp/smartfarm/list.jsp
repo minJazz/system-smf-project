@@ -121,6 +121,10 @@
        		    + "<td>CO2 농도 (ppm)</td>"
        		+ "</tr>"
         for (var i = 0; i < list.length; i++) {
+        	if (list[i].agentName == null) {
+        		break;
+        	}
+        	
         	tag += 
         		"<tr>"
         			+ "<td rowspan='2'>" + (i + 1) + "</td>"
@@ -143,7 +147,6 @@
         tag += "</table>";
        	document.getElementById("table").innerHTML = tag;
 
-       	console.log("navi : " + list[0].navigator);
        	document.getElementById("pageTable").innerHTML = list[0].navigator;
 	}
 	
@@ -154,7 +157,7 @@
 		
 		xmlRequest.open("GET", "/smartfarm?" 
 				+ "agentName=" + document.getElementById('agentName').value
-				// + "&userPhoneNumber=" + ${user.phoneNumber}
+				// + "&userPhoneNumber=" + ${user.phoneNumber}	TODO SESSTION 추가되면 주석 제거
 				+ "&pageNo=" + pageNo
 				, true);
 		xmlRequest.onreadystatechange = getData;

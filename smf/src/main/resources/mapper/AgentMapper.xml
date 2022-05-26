@@ -30,7 +30,10 @@
         FROM AGENT
         <where>
             <if test="agentName != null and agentName != ''">
-                AND AGENT_NAME LIKE = '%${agentName}%'
+                AND AGENT_NAME LIKE '%${agentName}%'
+            </if>
+            <if test="no != null and no != ''">
+                AND NO = #{no}
             </if>
         </where>
     </select>
@@ -53,7 +56,7 @@
         	FROM AGENT
 	        <where>
 	           <if test="agentName != null and agentName != ''">
-	               AND AGENT_NAME LIKE = '%${agentName}%'
+	               AND AGENT_NAME LIKE '%${agentName}%'
 	           </if>
 	           <if test="userPhoneNumber != null and userPhoneNumber != ''">
 	               AND USER_PHONE_NUMBER = #{userPhoneNumber}
