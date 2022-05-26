@@ -8,6 +8,12 @@ public class Agent implements Serializable {
 	private String userPhoneNumber;
 	private String agentName;
 
+	@Override
+	public String toString() {
+		return "Agent [agentIpAddress=" + agentIpAddress + ", no=" + no + ", userPhoneNumber=" + userPhoneNumber
+				+ ", agentName=" + agentName + "]";
+	}
+
 	public Agent() {
 	}
 
