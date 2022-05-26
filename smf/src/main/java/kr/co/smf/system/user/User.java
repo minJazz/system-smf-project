@@ -10,6 +10,14 @@ public class User implements Serializable {
 	private String mail;
 	private char permission;
 
+	
+	
+	@Override
+	public String toString() {
+		return "User [phoneNumber=" + phoneNumber + ", no=" + no + ", password=" + password + ", name=" + name
+				+ ", mail=" + mail + ", permission=" + permission + "]";
+	}
+
 	public User() {
 	}
 
