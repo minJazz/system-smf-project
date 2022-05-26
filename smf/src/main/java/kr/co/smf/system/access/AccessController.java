@@ -40,10 +40,10 @@ public class AccessController {
 		if (checkUser != null) {
 			httpSession.setAttribute("user", checkUser);
 
-			if ("U".equals(checkUser.getPermission())) {
-				modelAndView = new ModelAndView("smartfarm/user");
+			if ("U".equals(String.valueOf(checkUser.getPermission()))) {
+				modelAndView = new ModelAndView(new RedirectView("/user"));
 			} else {
-				modelAndView = new ModelAndView("smartfarm/smartfarm");
+				modelAndView = new ModelAndView(new RedirectView("/smartfarm"));
 			}
 
 			Cookie rememberCookie = new Cookie("REMEMBER", checkUser.getPhoneNumber());
