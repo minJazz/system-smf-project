@@ -33,7 +33,7 @@
             <if test="phoneNumber != null and phoneNumber != ''">
                 AND PHONE_NUMBER = #{phoneNumber}
             </if>
-            <if test="password != null and phoneNumber != ''">
+            <if test="password != null and password != ''">
                 AND PASSWORD = #{password}
             </if>
         </where>
@@ -53,13 +53,13 @@
         FROM SERVICE_USER
         <where>
             <if test="name != null and name != ''">
-                AND NAME LIKE = '%${name}%'
+                AND NAME LIKE '%${name}%'
             </if>
             <if test="phoneNumber != null and phoneNumber != ''">
-                AND PHONE_NUMBER LIKE = '%${phoneNumber}%'
+                AND PHONE_NUMBER LIKE '%${phoneNumber}%'
             </if>
             <if test="mail != null and mail != ''">
-                AND MAIL LIKE = '%${mail}%'
+                AND MAIL LIKE '%${mail}%'
             </if>
         </where>
     </select>
@@ -79,6 +79,7 @@
                 MAIL = #{mail},
             </if>
         </set>
+        WHERE NAME = #{name}
     </update>
     
     <!-- 데이터 삭제 매핑 구문  -->
