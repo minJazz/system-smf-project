@@ -34,8 +34,7 @@ public class AccessController {
 
 	@PostMapping("/login")
 	public ModelAndView login(User user, HttpSession httpSession, HttpServletResponse response, boolean remember) {
-//		User checkUser = accessService.login(user);
-		User checkUser = user; // 삭제하고 위에 주석을 풀어야함
+		User checkUser = accessService.login(user);
 		ModelAndView modelAndView = null;
 
 		if (checkUser != null) {

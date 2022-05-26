@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,16 +42,14 @@ public class AgentController {
 	@GetMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
 	public List<Agent> viewAgentList(
-			@RequestBody(required = true)
-			Map<String, String> condition) {
+			@RequestParam Map<String, String> condition) {
 		return agentService.viewAgentInfoList(condition);
 	}
 	
 	@PutMapping
 	@ResponseBody
-
 	public Map<String, String> editAgent(
-			@RequestBody Map<String, String> agentInfo) {
+			@RequestParam Map<String, String> agentInfo) {
 	    
 		if ("empty".equals(agentInfo.get("previousAgentIpAddress"))) {
 			Agent agent = new Agent();
@@ -81,7 +80,7 @@ public class AgentController {
 	@DeleteMapping
 	@ResponseBody
 	public List<Agent> removeAgent(
-			@RequestBody Map<String, String> condition) {
+			@RequestParam Map<String, String> condition) {
 		Agent agent = new Agent();
 		agent.setAgentIpAddress(condition.get("agentIpAddress"));
 		agent.setAgentName(condition.get("agentName"));
