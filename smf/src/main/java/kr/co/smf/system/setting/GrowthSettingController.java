@@ -32,8 +32,6 @@ public class GrowthSettingController {
 		condition.put("userPhoneNumber", user.getPhoneNumber());
 		List<Setting> settingList = settingService.viewSettingList(condition);
 
-		System.out.println(settingList.get(0).getSettingName());
-
 		ModelAndView modelAndView = new ModelAndView("setting/view");
 		modelAndView.addObject("settingList", settingList);
 		return modelAndView;
@@ -41,7 +39,7 @@ public class GrowthSettingController {
 
 	@GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Setting viewSetting(Setting setting) {
-		if("add".equals(setting.getSettingName())) {
+		if ("add".equals(setting.getSettingName())) {
 			setting.setSettingName("");
 			return setting;
 		}
@@ -50,14 +48,10 @@ public class GrowthSettingController {
 
 	@PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public List<Setting> updateSetting(@RequestBody Setting setting) {
-		boolean check = false;
-
 		if (settingService.viewSetting(setting) == null) {
-			check = settingService.addSetting(setting);
-			System.out.println("새로운 생장환경 설정 값 추가 여부 " + check);
+			settingService.addSetting(setting);
 		} else {
-			check = settingService.editSetting(setting);
-			System.out.println("생장환경 설정 값 변경 여부 " + check);
+			settingService.editSetting(setting);
 		}
 
 		Map<String, String> condition = new HashMap<String, String>();
@@ -68,6 +62,8 @@ public class GrowthSettingController {
 
 	@DeleteMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
 	public List<Setting> deleteSetting(@RequestBody Setting setting) {
+		settingService.deleteSetting(setting);
+
 		Map<String, String> condition = new HashMap<String, String>();
 		condition.put("userPhoneNumber", setting.getUserPhoneNumber());
 

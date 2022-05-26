@@ -14,7 +14,7 @@
         PW : <input type = "password" name = "password"/>
         <input type = "submit" value = "로그인"/> </br>
         
-        <input type = "checkbox" name = "remember" ${check}/>
+        phoneNumber 기억하기<input type = "checkbox" name = "remember" ${check}/>
     </form>
 
 
