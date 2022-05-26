@@ -47,7 +47,5 @@
         </form:form>
         <a href="/user"><input type="button" value="목록"/></a>
     </div>
-    
-    
 </body>
 </html>

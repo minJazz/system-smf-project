@@ -30,6 +30,9 @@
           , PERMISSION
         FROM SERVICE_USER
         <where>
+            <if test="no != null and no != ''">
+                AND NO = #{no}
+            </if>
             <if test="phoneNumber != null and phoneNumber != ''">
                 AND PHONE_NUMBER = #{phoneNumber}
             </if>
@@ -87,8 +90,8 @@
             parameterType="User">
         DELETE FROM SERVICE_USER
         <where>
-            <if test="phoneNumber != null and phoneNumber != ''">
-                AND PHONE_NUMBER = #{phoneNumber}
+            <if test="no != null and no != ''">
+                AND NO = #{no}
             </if>
         </where>
     </delete>
