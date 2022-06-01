@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,10 +32,6 @@ public class AgentController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping
-	public ModelAndView viewAgentList(HttpSession session) {
-		String userPhoneNumber = (String) session.getAttribute("userPhoneNumber");
-
 	@GetMapping("/list/{no}")
 	public ModelAndView viewAgentListForm(@PathVariable String no) {
 		Map<String, String> condition = new HashMap<String, String>();
