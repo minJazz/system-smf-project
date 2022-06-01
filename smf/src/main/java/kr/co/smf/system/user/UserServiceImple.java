@@ -14,6 +14,8 @@ public class UserServiceImple implements UserService {
 	@Override
 	public boolean addUser(User user) {
 		if (!("U".equals(String.valueOf((user.getPermission()))))) {
+			user.setPermission('M');
+		}else {
 			user.setPermission('U');
 		}
 		return userMapper.insertUserInfo(user) == 1 ? true : false;

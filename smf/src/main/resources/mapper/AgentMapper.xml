@@ -93,6 +93,9 @@
             <if test="agentIpAddress != null and agentIpAddress != ''">
                 AND AGENT_IP_ADDRESS = #{agent}
             </if>
+            <if test="no != null and no != ''">
+                AND NO = #{no}
+            </if>
         </where>
     </delete>
 </mapper>

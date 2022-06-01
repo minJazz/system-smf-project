@@ -30,7 +30,7 @@
 		<div class="right-box">
 		<table>
 			<tr>
-				<td><h2>${user.phoneNumber}</h2></td>
+				<td><h2>${user.name}</h2></td>
 				<td>
 					<form method="get" action="/logout">
 						<input type="submit" value="로그아웃" style="font-size:20px;"/>
@@ -80,7 +80,9 @@
 	    </table>
     </div>
     
-    <div id = udpateButton>
+    
+    
+    <div id = updateButton>
 	    <table border = "1">
 	    	<tr>
 				<td>
@@ -93,23 +95,41 @@
 	    </table>
     </div>
     
+    
+    
     <script>
     	function updateSetting() {
-    		xmlRequest = new XMLHttpRequest();
+    		var settingName = document.getElementById('nameText').value;
+    		var temperature = document.getElementById('temperatureText').value;
+    		var humidity = document.getElementById('humidityText').value;
+    		var co2 = document.getElementById('co2Text').value;
     		
-    		var setting = {
-    			userPhoneNumber : '${user.phoneNumber}',
-    			settingName : document.getElementById('nameText').value,
-    			temperature : document.getElementById('temperatureText').value,
-    			humidity : document.getElementById('humidityText').value,
-    			co2 : document.getElementById('co2Text').value
-    		};
-    		var settingJson = JSON.stringify(setting);
-    		
-			xmlRequest.open("PUT","/setting",true);
-			xmlRequest.onreadystatechange = getUpdateSettingList;
-			xmlRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			xmlRequest.send(settingJson);
+    		if(settingName == "") {
+    			alert("생장환경 설정 이름을 입력하시오");
+    		} else if(temperature == "") {
+    			alert("온도를 입력하시오");
+    		} else if(humidity == "") {
+    			alert("습도를 입력하시오");
+    		} else if(co2 == "") {
+    			alert("co2를 입력하시오");
+    		} else {
+        		xmlRequest = new XMLHttpRequest();
+        		
+        		var setting = {
+        			userPhoneNumber : '${user.phoneNumber}',
+        			settingName : document.getElementById('nameText').value,
+        			temperature : document.getElementById('temperatureText').value,
+        			humidity : document.getElementById('humidityText').value,
+        			co2 : document.getElementById('co2Text').value
+        		};
+        		var settingJson = JSON.stringify(setting);
+        		
+    			xmlRequest.open("PUT","/setting",true);
+    			xmlRequest.onreadystatechange = getUpdateSettingList;
+    			xmlRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    			xmlRequest.send(settingJson);
+        		
+    		}
     		
     	}
     </script>
@@ -142,12 +162,22 @@
 				var json = JSON.parse(text);
 			}
 			
+			var settingName = document.getElementById('nameText').value;
+			
 			var tag = "<select name = 'settingName'" + "id = 'settingName' " + "onchange= 'sendSettingName(this.value);'>"+
-			"<option value = 'add'" + " 'selected' >생장환경 설정 추가</option>"
+			"<option value = 'add'>생장환경 설정 추가</option>"
 			
 			for (var i = 0; i < json.length; i++) {
-				tag +=
-					"<option value="+json[i].settingName+ ">" + json[i].settingName+ "</option>"
+				console.log(settingName);
+				console.log(json[i].settingName);
+				console.log(settingName == json[i].settingName);
+				if(settingName==json[i].settingName) {
+					tag +=
+						"<option selected value="+json[i].settingName+ ">" + json[i].settingName+ "</option>"
+				} else {
+					tag +=
+						"<option value="+json[i].settingName+ ">" + json[i].settingName+ "</option>"
+				}
 			}
 			tag += "</select>"
 			document.getElementById("settingList").innerHTML = tag;
