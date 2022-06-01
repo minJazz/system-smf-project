@@ -32,9 +32,6 @@ public class SystemUtil {
 	}
 	
 	public Measurement requestRealTimeGrowthInfo(Agent agent) throws IOException {
-		String requestJson = "{'agentIpAddress' : '" + agent.getAgentIpAddress() + "'}";
-		RequestBody reqeustBody = RequestBody.create(JSON, requestJson);
-		
 		Request request = new Request.Builder()
 				.url("http://" + agent.getAgentIpAddress() + "/realtime-info?agentIpAddress=" + agent.getAgentIpAddress())
                 .build();
@@ -57,9 +54,6 @@ public class SystemUtil {
 	}
 	
 	public Setting requestNowGrowthSetting(Agent agent) throws IOException {
-		String requestJson = "{'agentIpAddress' : '" + agent.getAgentIpAddress() + "'}";
-		RequestBody reqeustBody = RequestBody.create(JSON, requestJson);
-		
 		Request request = new Request.Builder()
 				.url("http://" + agent.getAgentIpAddress() + "/now-setting-info?agentIpAddress=" + agent.getAgentIpAddress())
                 .build();
@@ -97,8 +91,8 @@ public class SystemUtil {
 	}
 	
 	public void sendUserInfo(Agent agent, User user) throws IOException {
-		String json = "{'agentIpAddress' : '" + agent.getAgentIpAddress() + "', "
-					 + "'userMail' : '" + user.getMail() + "'}";
+		String json = "{\"agentIpAddress\" : \"" + agent.getAgentIpAddress() + "\", "
+					 + "\"userMail\" : \"" + user.getMail() + "\" }";
         RequestBody body = RequestBody.create(JSON, json);
 		
 		Request request = new Request.Builder()

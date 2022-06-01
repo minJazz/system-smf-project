@@ -13,9 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.smf.system.agent.Agent;
@@ -168,8 +168,6 @@ public class SmartFarmController {
 
 	@PutMapping("/control")
 	public void controlSmartFarm(Agent agent, Setting setting) {
-		System.out.println(">>>>>>>>>control : " + agent + setting);
-
 		try {
 			systemUtil.requestControlGrowth(agent, setting);
 		} catch (IOException e) {
@@ -186,12 +184,20 @@ public class SmartFarmController {
 		return measurementService.viewMeasurementList(condition);
 	}
 
-	@PostMapping(path = "/measurement", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping("/record-info")
 	@ResponseBody
-	public Map<String, String> addMeasureInfo(@RequestBody Measurement measurement) {
+	public Map<String, String> addMeasureInfo(
+			@RequestParam("photo") MultipartFile multipartFile, 
+			@RequestParam Measurement measurement) {
 		Map<String, String> response = new HashMap<String, String>();
 		
 		if (measurementService.addMeasurement(measurement)) {
+			try {
+				photoUtil.insertPhoto(multipartFile, measurement);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 			response.put("code", "200");
 			response.put("message", "ok");
 		} else {
