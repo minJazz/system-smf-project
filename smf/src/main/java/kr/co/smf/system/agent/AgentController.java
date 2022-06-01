@@ -18,11 +18,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import kr.co.smf.system.user.User;
+import kr.co.smf.system.user.UserService;
+
 @Controller
 @RequestMapping("/agent")
 public class AgentController {
 	@Autowired
 	private AgentService agentService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@GetMapping
 	public ModelAndView viewAgentList(HttpSession session) {
@@ -54,15 +60,20 @@ public class AgentController {
 		if ("empty".equals(agentInfo.get("previousAgentIpAddress"))) {
 			Agent agent = new Agent();
 			agent.setAgentIpAddress(agentInfo.get("nowAgentIpAddress"));
-			agent.setUserPhoneNumber(agentInfo.get("userPhoneNumber"));
 			
+			User user = new User();
+			user.setMail(agentInfo.get("userMail"));
+			
+			user = userService.viewUser(user);
+			
+			agent.setUserPhoneNumber(user.getPhoneNumber());
 			agentService.addAgentInfo(agent);
 			
 		} else if (!(agentInfo.get("previousAgentIpAddress").equals("nowAgentIpAddress"))) {
 			agentService.editAgentInfo(agentInfo);
 		} else {
 			Map<String, String> response = new HashMap<String, String>();
-			response.put("code","400");
+			response.put("code","300");
 			response.put("message","error");
 			
 			return response;
