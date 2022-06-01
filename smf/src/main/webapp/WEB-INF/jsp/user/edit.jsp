@@ -13,13 +13,14 @@
     <br/>
     <br/>
     
-    <h2>사용자 등록</h2>
+    <h2>사용자 수정</h2>
     
+    <hr/>
     <br/>
     <br/>
     <div style="border:1; float:left; width:100px%;">
         <form:form action="/user" method="PUT">
-	        <table>
+	        <table border=1>
             <tr>
 	            <th>이름               :</th>
 	            <td>

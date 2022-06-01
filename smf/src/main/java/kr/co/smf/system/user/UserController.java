@@ -19,11 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import kr.co.smf.system.util.Navigator;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private Navigator navigator;
 	
 	@GetMapping("/form")
 	public ModelAndView addUser() {
@@ -57,9 +62,8 @@ public class UserController {
 	public ModelAndView editUser(@PathVariable String no) {
 		User user = new User();
 		user.setNo(Integer.valueOf(no));
-		System.out.println(user);
+		
 		user = userService.viewUser(user);
-		System.out.println(user);
 		
 		ModelAndView mav = new ModelAndView("/user/edit");
 		mav.addObject("user", user);

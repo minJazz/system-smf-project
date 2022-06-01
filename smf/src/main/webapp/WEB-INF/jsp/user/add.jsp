@@ -18,7 +18,7 @@
     <br/>
     <div style="border:1; float:left; width:100px%;">
     <form action="/user" method="POST">
-	    <table>
+	    <table border=1>
 	        <tr>
 	            <th>이름               :</th>
 	            <td><input type="text" name="name" /></td>
