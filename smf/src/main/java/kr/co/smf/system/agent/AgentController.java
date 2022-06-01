@@ -62,7 +62,7 @@ public class AgentController {
 	@PutMapping
 	@ResponseBody
 	public Map<String, String> editAgent(
-			@RequestParam Map<String, String> agentInfo) {
+			@RequestBody Map<String, String> agentInfo) {
 	    
 		if ("empty".equals(agentInfo.get("previousAgentIpAddress"))) {
 			Agent agent = new Agent();
@@ -76,7 +76,7 @@ public class AgentController {
 			agent.setUserPhoneNumber(user.getPhoneNumber());
 			agentService.addAgentInfo(agent);
 			
-		} else if (!(agentInfo.get("previousAgentIpAddress").equals("nowAgentIpAddress"))) {
+		} else if (!(agentInfo.get("previousAgentIpAddress").equals(agentInfo.get("nowAgentIpAddress")))) {
 			agentService.editAgentInfo(agentInfo);
 		} else {
 			Map<String, String> response = new HashMap<String, String>();
