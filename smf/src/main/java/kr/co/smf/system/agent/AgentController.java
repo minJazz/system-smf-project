@@ -4,45 +4,55 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-@Controller
+import kr.co.smf.system.user.User;
+import kr.co.smf.system.user.UserService;
+
+@RestController
 @RequestMapping("/agent")
 public class AgentController {
 	@Autowired
 	private AgentService agentService;
 	
-	@GetMapping
-	public ModelAndView viewAgentList(HttpSession session) {
-		String userPhoneNumber = (String) session.getAttribute("userPhoneNumber");
-		
+	@Autowired
+	private UserService userService;
+	
+	@GetMapping("/list/{no}")
+	public ModelAndView viewAgentListForm(@PathVariable String no) {
 		Map<String, String> condition = new HashMap<String, String>();
-		condition.put("userPhoneNumber", userPhoneNumber);
+		condition.put("no", no);
 		
+		User user = new User();
+		user.setNo(Integer.valueOf(no));
+				
 		List<Agent> list = agentService.viewAgentInfoList(condition);
 		
-		ModelAndView mav = new ModelAndView("list");
-		mav.addObject("list", condition);
+		ModelAndView mav = new ModelAndView("/agent/list");
+		mav.addObject("user", userService.viewUser(user));
+		mav.addObject("list", list);
+		mav.addObject("no", no);
 		
 		return mav;
 	}
 	
-	@GetMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@PostMapping
 	@ResponseBody
-	public List<Agent> viewAgentList(
-			@RequestParam Map<String, String> condition) {
+	public List<Agent> viewAgentList(@RequestBody String no) {
+		Map<String, String> condition = new HashMap<String, String>();
+		condition.put("no", no);
+		
 		return agentService.viewAgentInfoList(condition);
 	}
 	
@@ -80,12 +90,10 @@ public class AgentController {
 	@DeleteMapping
 	@ResponseBody
 	public List<Agent> removeAgent(
-			@RequestParam Map<String, String> condition) {
+			@RequestBody Map<String, String> condition) {
+		
 		Agent agent = new Agent();
-		agent.setAgentIpAddress(condition.get("agentIpAddress"));
-		agent.setAgentName(condition.get("agentName"));
 		agent.setNo(Integer.valueOf(condition.get("no")));
-		agent.setUserPhoneNumber(condition.get("userPhoneNumber"));
 		agentService.deleteAgentInfo(agent);
 
 		String pageNo = condition.get("pageNo");

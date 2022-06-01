@@ -9,7 +9,7 @@
     <title>Insert title here</title>
 </head>
 <body>
-    <input type="button" value="사용자 정보 목록" />
+    <a href="/user"><input type="button" value="사용자 정보 목록" /></a>
     <br/>
     
     <div style="float:right;">
@@ -109,7 +109,7 @@
 					for (var i = 0; i < parseData.length; i++) {
 						text += "<tbody id = 'tableValue'><tr><th>"
 								+ (i+1)
-								+ "</th><td><a href='/agent/" + parseData[i].no + "' >"
+								+ "</th><td><a href='/agent/list/" + parseData[i].no + "' >"
 								+ parseData[i].name + "</a></td><td>"
 								+ parseData[i].phoneNumber + "</td>"
 								+ "<td>" + parseData[i].mail + "</td>"

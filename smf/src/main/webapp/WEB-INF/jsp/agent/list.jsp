@@ -19,7 +19,6 @@
     
     <div>
     <h2>${user.name}님의 에이전트 목록</h2> 
-    
     </div>
     
     <hr/>
@@ -27,19 +26,9 @@
     <table>
         <tr>
             <td>
-              <div style="border:1; float:left; width:100px%;">
-              	     검색 조건
-	              <select id="name">
-	                  <option value="0" selected>이름</option>
-	                  <c:forEach items="${list}" var="row">
-	                      <option value="${row.name}">${row.name}</option>
-	                  </c:forEach>
-	              </select>
-	              <input type="text" id="phoneNumber" placeholder="전화번호" />
-	              <input type="button" value="검색" onclick="rendering()">
-              </div>
               <div style="border:1; float:right; width: 100px%;">
-                  <a><input type="button" value="삭제" onclick="deleteClick(tableValue)"></a>
+                  <input type="hidden" id="no" value="${no}"/>
+                  <a><input type="button" value="삭제" onclick="deleteClick()"></a>
               </div>
             </td>
         </tr>
@@ -51,68 +40,106 @@
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     
     <script type="text/javascript" >
-    	rendering();
+        getData();
     
-    	function deleteClick(tableValue) {
-        	for (var i = 0; i < val.length; i++) {
-        	    var radio = document.getElementById("radio" + i);
-                if (radio.checked) {
-                    console.log(radio);
-        	        console.log(val[i].innerText.split("\t")[0]);
-        	        
-        	        var no = val[i].innerText.split("\t")[0];
-        	        window.location.href = "http://localhost/user/" + no + "/form";
-                }
-        	}
-        }
-    	
-        function editClick(val) {
-        	var radioVal = $('input[name="radio"]:checked').val();
+    	function getData() {
+    		var no = document.getElementById("no").value;
         	
-        	var no = (radioVal+"").split("/")[1];
-     	    window.location.href = "http://localhost/user/" + no + "/form";
-        }
-    
-    
-		function rendering() {
+    		var item = {
+                	"no" : no
+            }
+    		
+    		$.ajax({
+                url: "${pageContext.request.contextPath}/agent",
+                method: "POST",
+                contentType : "application/json; charset=UTF-8",
+                dataType: "JSON",
+                data: JSON.stringify(item),
+                success: function (data) {
+                    rendering(data);
+                }
+            });
+    	}
+    	
+    	function deleteClick() {
+			var radioVal = $('input[name="radio"]:checked').val();
+        	
+        	var no = "" + (radioVal+"").split("/")[1];
+        	
+        	console.log(radioVal);
+        	console.log(no);
+        	var item = {
+            	"no" : no
+            }
+    		$.ajax({
+                url: "${pageContext.request.contextPath}/agent",
+                method: "DELETE",
+                contentType : "application/json; charset=UTF-8",
+                dataType: "JSON",
+                data: JSON.stringify(item), 
+                success: function (data) {
+                    rendering(data);
+                }
+            });
+    	}
+    	
+		function rendering(data) {
+/* 			var no = document.getElementById("no").value;
+			console.log("--->" + no);
 			xmlHttp = new XMLHttpRequest();
 			
-			var name = document.getElementById("name").value;
-			var phoneNumber = document.getElementById("phoneNumber").value;
-			
-			if (name != 0 && phoneNumber == null) {
-				xmlHttp.open('GET', 'http://localhost/user?name='+name, true);
-			} else if (name == 0 && phoneNumber != null) {
-				xmlHttp.open('GET', 'http://localhost/user?phoneNumber='+phoneNumber, true);
-			} else {
-				xmlHttp.open('GET', 'http://localhost/user?name='+name+'&phoneNumber='+phoneNumber, true);
-			}
+			xmlHttp.open('GET', 'http://localhost/agent?no=' + no , true);
 			
 			xmlHttp.onreadystatechange = function() {
 				if (this.status == 200 && this.readyState == this.DONE) {
 					//sql문으로 읽어온 json 형식의 문자열
 					var data = xmlHttp.responseText;
-					//json문자열 파싱 작업
-					var parseData = JSON.parse(data);
-					console.log(parseData);
+					//json문자열 파싱 작업 */
+					//console.log("--->" + data);
+					//var parseData = JSON.parse(data);
+					//console.log("===>" + parseData);
 					//html 변환 작업
-				    var text = "<table border='1'> <thead> <tr> <th>번호</th> <th>이름</th> <th>연락처</th> <th>이메일</th> <th>선택</th> </tr> </thead>";
-					for (var i = 0; i < parseData.length; i++) {
-						text += "<tbody id = 'tableValue'><tr><th>"
-								+ (i+1)
-								+ "</th><td><a href='/agent/" + parseData[i].no + "' >"
-								+ parseData[i].name + "</a></td><td>"
-								+ parseData[i].phoneNumber + "</td>"
-								+ "<td>" + parseData[i].mail + "</td>"
-								+ "<th><input type='radio' value=\"radio/" + parseData[i].no + "\" id=\"radio/" + parseData[i].no +  "\" name=\"radio\" class='checkBtn' </th></tr></tbody>";
+					var text = 
+						"<table border='1'>"
+						+ "<thead>"
+						+    "<tr>"
+						+	    "<th>"
+						+		    "번호"
+						+		"</th>"
+						+		"<th>"
+						+		    "에이전트 이름"
+						+		"</th>"
+						+		"<th>"
+						+		    "IP주소"
+						+		"</th>"
+					    +        "<th>"
+					    +           "선택"   
+					    +        "</th>"
+					    + "</thead>"			
+						+ "<tbody id = 'tableValue'>";
+					for (var i = 0; i < data.length; i++) {
+					    text +=  
+					    	"<tr>"
+						+	    "<th>"
+						+		    (i+1)
+						+		"</th>"
+						+		"<td>"
+						+		    data[i].agentName
+						+		"</td>"
+						+		"<td>"
+						+		    data[i].nowAgentIpAddress
+						+		"</td>"
+						+		"<th>"
+						+		    "<input type='radio' value=\"radio/" + data[i].no + "\" id=\"radio/" + data[i].no + "\" name='radio'/>"
+						+		"</th>"
+						+	"</tr>"
+						+ "</tbody>"
 					}
-					text += "</table>";
-					document.getElementById("table").innerHTML = text;
-				}
+					    + "</table>";
+			    document.getElementById("table").innerHTML = text;
 			}
-			xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			xmlHttp.send();
-		}
+			
+		
 	</script>
 </body>
 </html>
