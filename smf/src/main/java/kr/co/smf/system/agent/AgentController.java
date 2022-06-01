@@ -74,6 +74,7 @@ public class AgentController {
 			user = userService.viewUser(user);
 			
 			agent.setUserPhoneNumber(user.getPhoneNumber());
+			agent.setAgentName(agentInfo.get("nowAgentIpAddress"));
 			agentService.addAgentInfo(agent);
 			
 		} else if (!(agentInfo.get("previousAgentIpAddress").equals(agentInfo.get("nowAgentIpAddress")))) {
