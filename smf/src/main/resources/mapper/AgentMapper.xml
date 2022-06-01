@@ -15,7 +15,7 @@
         INSERT INTO AGENT
             (AGENT_IP_ADDRESS, NO, USER_PHONE_NUMBER, AGENT_NAME)
         VALUES
-            (#{agentIpAddress}, #{no}, #{userPhoneNumber}, #{name})
+            (#{agentIpAddress}, #{no}, #{userPhoneNumber}, #{agentName})
     </insert>
 
     <!-- 조건 조회 매핑 구문 -->
