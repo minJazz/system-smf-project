@@ -22,7 +22,7 @@ import okhttp3.ResponseBody;
 
 @Component
 public class SystemUtil {
-	public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+	private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 	private OkHttpClient client;
 	private ObjectMapper objectMapper;
 	
@@ -102,7 +102,7 @@ public class SystemUtil {
         RequestBody body = RequestBody.create(JSON, json);
 		
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + "/user-info")
+				.url("http://" + agent.getAgentIpAddress() + "/agent/user")
 				.put(body)
                 .build();
 		

@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import kr.co.smf.system.user.User;
 import kr.co.smf.system.user.UserService;
 
+
 @RestController
 @RequestMapping("/agent")
 public class AgentController {
@@ -29,6 +30,10 @@ public class AgentController {
 	@Autowired
 	private UserService userService;
 	
+	@GetMapping
+	public ModelAndView viewAgentList(HttpSession session) {
+		String userPhoneNumber = (String) session.getAttribute("userPhoneNumber");
+
 	@GetMapping("/list/{no}")
 	public ModelAndView viewAgentListForm(@PathVariable String no) {
 		Map<String, String> condition = new HashMap<String, String>();
@@ -64,15 +69,20 @@ public class AgentController {
 		if ("empty".equals(agentInfo.get("previousAgentIpAddress"))) {
 			Agent agent = new Agent();
 			agent.setAgentIpAddress(agentInfo.get("nowAgentIpAddress"));
-			agent.setUserPhoneNumber(agentInfo.get("userPhoneNumber"));
 			
+			User user = new User();
+			user.setMail(agentInfo.get("userMail"));
+			
+			user = userService.viewUser(user);
+			
+			agent.setUserPhoneNumber(user.getPhoneNumber());
 			agentService.addAgentInfo(agent);
 			
 		} else if (!(agentInfo.get("previousAgentIpAddress").equals("nowAgentIpAddress"))) {
 			agentService.editAgentInfo(agentInfo);
 		} else {
 			Map<String, String> response = new HashMap<String, String>();
-			response.put("code","400");
+			response.put("code","300");
 			response.put("message","error");
 			
 			return response;
