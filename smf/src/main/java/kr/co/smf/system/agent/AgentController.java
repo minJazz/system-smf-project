@@ -24,7 +24,6 @@ import kr.co.smf.system.user.UserService;
 
 
 @RestController
-@RequestMapping("/agent")
 public class AgentController {
 	@Autowired
 	private AgentService agentService;
@@ -32,7 +31,7 @@ public class AgentController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping("/list/{no}")
+	@GetMapping("/agent/list/{no}")
 	public ModelAndView viewAgentListForm(@PathVariable String no) {
 		Map<String, String> condition = new HashMap<String, String>();
 		condition.put("no", no);
@@ -59,7 +58,7 @@ public class AgentController {
 		return agentService.viewAgentInfoList(condition);
 	}
 	
-	@PutMapping
+	@PutMapping("/agent-info")
 	@ResponseBody
 	public Map<String, String> editAgent(
 			@RequestBody Map<String, String> agentInfo) {
@@ -96,7 +95,7 @@ public class AgentController {
 	}
 	
 	
-	@DeleteMapping
+	@DeleteMapping("/agent")
 	@ResponseBody
 	public List<Agent> removeAgent(
 			@RequestBody Map<String, String> condition) {
