@@ -33,7 +33,7 @@ public class SystemUtil {
 	
 	public Measurement requestRealTimeGrowthInfo(Agent agent) throws IOException {
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + "/realtime-info?agentIpAddress=" + agent.getAgentIpAddress())
+				.url("http://" + agent.getAgentIpAddress() + "/agent/measure?agentIpAddress=" + agent.getAgentIpAddress())
                 .build();
 		
 		Response response = client.newCall(request).execute();
@@ -55,7 +55,7 @@ public class SystemUtil {
 	
 	public Setting requestNowGrowthSetting(Agent agent) throws IOException {
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + "/now-setting-info?agentIpAddress=" + agent.getAgentIpAddress())
+				.url("http://" + agent.getAgentIpAddress() + "/agent/setting?agentIpAddress=" + agent.getAgentIpAddress())
                 .build();
 		
 		Response response = client.newCall(request).execute();
@@ -76,7 +76,7 @@ public class SystemUtil {
         RequestBody body = RequestBody.create(JSON, json);
 		
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + "/control-request")
+				.url("http://" + agent.getAgentIpAddress() + "/agent/setting")
 				.post(body)
                 .build();
 		
