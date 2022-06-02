@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.smf.system.user.User;
 import kr.co.smf.system.user.UserService;
+import kr.co.smf.system.util.Navigator;
 
 
 @RestController
@@ -31,31 +32,46 @@ public class AgentController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private Navigator navigator;
+	
 	@GetMapping("/agent/list/{no}")
 	public ModelAndView viewAgentListForm(@PathVariable String no) {
-		Map<String, String> condition = new HashMap<String, String>();
-		condition.put("no", no);
-		
 		User user = new User();
 		user.setNo(Integer.valueOf(no));
+		
+		user = userService.viewUser(user);
 				
+		Map<String, String> condition = new HashMap<String, String>();
+		condition.put("userPhoneNumber", user.getPhoneNumber());
+		
 		List<Agent> list = agentService.viewAgentInfoList(condition);
 		
 		ModelAndView mav = new ModelAndView("/agent/list");
-		mav.addObject("user", userService.viewUser(user));
+		mav.addObject("user", user);
 		mav.addObject("list", list);
-		mav.addObject("no", no);
 		
 		return mav;
 	}
 	
-	@PostMapping
+	@PostMapping("/agent")
 	@ResponseBody
-	public List<Agent> viewAgentList(@RequestBody String no) {
-		Map<String, String> condition = new HashMap<String, String>();
-		condition.put("no", no);
+	public List<Agent> viewAgentList(@RequestBody Map<String, String> condition) {
+		List<Agent> agents = agentService.viewAgentInfoList(condition);
 		
-		return agentService.viewAgentInfoList(condition);
+		Map<String, String> allCondition = new HashMap<String, String>();
+		allCondition.putAll(condition);
+		allCondition.remove("pageNo");
+		
+		List<Agent> allAgents = agentService.viewAgentInfoList(allCondition);
+		String navigatorHtml = navigator.getNavigator(allAgents.size(), Integer.parseInt(condition.get("pageNo")));
+		
+		Agent agent = new Agent();
+		agent.setAgentName(navigatorHtml);
+		
+		agents.add(0, agent);
+		
+		return agents;
 	}
 	
 	@PutMapping("/agent-info")
