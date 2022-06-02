@@ -39,6 +39,10 @@
             <if test="password != null and password != ''">
                 AND PASSWORD = #{password}
             </if>
+            <if test="mail != null and mail != ''">
+                AND MAIL = #{mail}
+            </if>
+            
         </where>
     </select>
     
