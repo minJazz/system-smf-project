@@ -36,7 +36,7 @@
 	                  </c:forEach>
 	              </select>
 	              <input type="text" id="phoneNumber" placeholder="전화번호" />
-	              <input type="button" value="검색" onclick="rendering()">
+	              <input type="button" value="검색" onclick="rendering()" />
               </div>
               <div style="border:1; float:right; width: 100px%;">
                   <a href="/user/form"><input type="button" value="등록"></a>
@@ -50,9 +50,27 @@
     <br/>
     <div id="table"></div>
     
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+
+	<div id="pageTable"></div>
+	
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
     
     <script type="text/javascript" >
+    	var pageNo = 0;
+    
+    	function changePage(pageButtonId) {
+            pageNo = parseInt(pageButtonId);
+
+            search();
+        }
+    	
+    	
     	rendering();
     	
     	function deleteClick() {
@@ -90,11 +108,11 @@
 			var phoneNumber = document.getElementById("phoneNumber").value;
 			
 			if (name != 0 && phoneNumber == null) {
-				xmlHttp.open('GET', 'http://localhost/user?name='+name, true);
+				xmlHttp.open('GET', 'http://localhost/user?&pageNo='+ pageNo + '&name='+name, true);
 			} else if (name == 0 && phoneNumber != null) {
-				xmlHttp.open('GET', 'http://localhost/user?phoneNumber='+phoneNumber, true);
+				xmlHttp.open('GET', 'http://localhost/user?&pageNo='+ pageNo + '&phoneNumber='+phoneNumber, true);
 			} else {
-				xmlHttp.open('GET', 'http://localhost/user?name='+name+'&phoneNumber='+phoneNumber, true);
+				xmlHttp.open('GET', 'http://localhost/user?&pageNo='+ pageNo + '&name='+name+'&phoneNumber='+phoneNumber, true);
 			}
 			
 			xmlHttp.onreadystatechange = function() {
@@ -106,9 +124,9 @@
 					console.log(parseData);
 					//html 변환 작업
 				    var text = "<table border='1'> <thead> <tr> <th>번호</th> <th>이름</th> <th>연락처</th> <th>이메일</th> <th>선택</th> </tr> </thead>";
-					for (var i = 0; i < parseData.length; i++) {
+					for (var i = 1; i < parseData.length; i++) {
 						text += "<tbody id = 'tableValue'><tr><th>"
-								+ (i+1)
+								+ (i)
 								+ "</th><td><a href='/agent/list/" + parseData[i].no + "' >"
 								+ parseData[i].name + "</a></td><td>"
 								+ parseData[i].phoneNumber + "</td>"
@@ -117,6 +135,7 @@
 					}
 					text += "</table>";
 					document.getElementById("table").innerHTML = text;
+					document.getElementById("pageTable").innerHTML = parseData[0].name;
 				}
 			}
 			xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
