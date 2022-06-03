@@ -1,371 +1,143 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ page isELIgnored="false" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>스마트 팜 관리</title>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-<script>
-	var moveCondition = "now";
-</script>
-<style>
-.left-box {
-  float: left;
-}
-.right-box {
-  float: right;
-}
-</style>
-<div>
-	<div class="left-box">
-		<table>
-			<tr>
-				<td><th><a href="/smartfarm"><h2>스마트 팜 목록</h2></a></th></td>
-				<td> | </td>
-				<td><th><a href="/setting"><h2>생장환경 설정</h2></a></th></td>
-			</tr>
-		</table>
-	</div>
-	<div class="right-box">
-		<table>
-			<tr><br/></tr>
-			<tr>
-				<td><h2>${ user.name }</h2></td>
-				<td>
-					<form method="get" action="/logout">
-						<input type="submit" value="로그아웃" style="font-size:20px;"/>
-					</form>
-				</td>
-			</tr>
-		</table>
-	</div>
-</div>
+    <title>Agent List | SMF</title>
+	<jsp:include page="/WEB-INF/jsp/common/top.jsp"/>
 
-
-
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-
+    <!-- jquery.vectormap css -->
+    <link href="/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+        type="text/css" />
 
 </head>
-<body>
 
-<div class="left-box">
-	<div>
-		<input type="text" name="agentName" id="agentName" value="${agent.agentName}" style="font-size:25px; width:200px; onKeypress="javascript:if(event.keyCode==13) {}" />
-		<input type="hidden" name="agentIpAddress" id="agentIpAddress" value="${agent.agentIpAddress}" />
-		<input type="button" value="수정" style="font-size:20px;" onclick="edit()" />
-		<input type="text" style="display:none;"/>
-	</div>
-	<script>
-		function edit() {
-			$.ajax({
-				url: "${pageContext.request.contextPath}/smartfarm",
-				method: "put",
-				data: {
-					agentIpAddress : document.getElementById("agentIpAddress").value,
-					agentName : document.getElementById("agentName").value
-				}
-			});
-		}
-	</script>
-</div>
+<body data-layout="horizontal">
+    <div class="container-fluid">
+        <!-- Begin page -->
+        <div id="layout-wrapper">
 
-<br/>
-<br/>
-<br/>
+            <header id="page-topbar">
+                <div class="navbar-header">
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-sm px-3 font-size-16 d-lg-none header-item waves-effect waves-light"
+                            data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+                    
+                        <div class="topnav">
+                            <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
 
-<hr/>
+                                <div class="collapse navbar-collapse" id="topnav-menu-content">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle arrow-none" href="/user" id="topnav-dashboard"
+                                                role="button">
+                                                사용자 정보 목록 
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
 
-<table>
-	<tr>
-	<div>
-		<td>
-			<div class="left-box">
-				<table border='2' height="300">
-					<tr>
-						<td style="text-align:center;">생장환경 요소</td>
-						<td style="text-align:center;">생장환경 값</td>
-					</tr>
-					<tr>
-						<td style="text-align:center;">온도</td>
-						<td><input type="text" id="temperature" name="temperature" value="${setting.temperature}"> °C</td>
-					</tr>
-					<tr>
-						<td style="text-align:center;">습도</td>
-						<td><input type="text" id="humidity" name="humidity" value="${setting.humidity}"> %</td>
-					</tr>
-					<tr>
-						<td style="text-align:center;">CO2 농도</td>
-						<td><input type="text" id="co2" name="co2" value="${setting.co2}"> ppm</td>
-					</tr>
-				</table>
-			</div>
-		</td>
-		
-		<td>
-			<table height="300" style="text-align:center;">
-				<tr>
-					<td colspan="2" id="combo" height="60">
-						<select id="selectBox" name="selectBox" onchange="changeSetting(this)">
-							<option value="none" value1="0" value2="0" value3="0">생장 환경 설정</option>
-							<c:forEach items="${settings}" var="row" varStatus="object">
-			                    <option value1="${row.temperature}" value2="${row.humidity}" value3="${row.co2}">${row.settingName}</option>
-			                </c:forEach>
-						</select>
-					</td>
-					<script>
-						function changeSetting(obj) {
-							document.getElementById("temperature").value = $("#selectBox > option:selected").attr("value1");
-							document.getElementById("humidity").value = $("#selectBox > option:selected").attr("value2");
-							document.getElementById("co2").value = $("#selectBox > option:selected").attr("value3");
-						}
-						
-						function initSelect() {
-							$("#selectBox").val("none").prop("selected", true);
-						}
-					</script>
-				</tr>
-				<tr>
-					<td width="30"><a href="#" onclick=upTemp() ><h1> + </h1></a></td>
-					<script>
-						function upTemp() {
-							let temp = parseFloat(document.getElementById("temperature").value);
-							
-							document.getElementById("temperature").value = (temp + 1);
-							initSelect();
-						}
-					</script>
-					<td width="20"><a href="#" onclick=downTemp() ><h1> - </h1></a></td>
-					<script>
-						function downTemp() {
-							let temp = parseFloat(document.getElementById("temperature").value);
-							
-							document.getElementById("temperature").value = (temp - 1);
-							initSelect();
-						}
-					</script>
-				</tr>
-				
-				<tr>
-					<td width="30"><a href="#" onclick=upHumi() ><h1> + </h1></a></td>
-					<script>
-						function upHumi() {
-							let humidity = parseFloat(document.getElementById("humidity").value);
-							
-							document.getElementById("humidity").value = (humidity + 1);
-							initSelect();
-						}
-					</script>
-					<td width="20"><a href="#" onclick=downHumi() ><h1> - </h1></a></td>
-					<script>
-						function downHumi() {
-							let humidity = parseFloat(document.getElementById("humidity").value);
-							
-							document.getElementById("humidity").value = (humidity - 1);
-							initSelect();
-						}
-					</script>
-				</tr>
-				
-				<tr>
-					<td width="30"><a href="#" onclick=upCo2() ><h1> + </h1></a></td>
-					<script>
-						function upCo2() {
-							let co2 = parseFloat(document.getElementById("co2").value);
-							
-							document.getElementById("co2").value = (co2 + 1);
-							initSelect();
-						}
-						
-					</script>
-					<td width="20"><a href="#" onclick=downCo2() ><h1> - </h1></a></td>
-					<script>
-						function downCo2() {
-							let co2 = parseFloat(document.getElementById("co2").value);
-							
-							document.getElementById("co2").value = (co2 - 1);
-							initSelect();
-						}
-						
-					</script>
-					<td><input type="button" value="제어" onclick="control()"/></td>
-					<script>
-						function control() {
-							$.ajax({
-								url: "${pageContext.request.contextPath}/control",
-								method: "put",
-								data: {
-									agentIpAddress : document.getElementById("agentIpAddress").value,
-									temperature : document.getElementById("temperature").value,
-									humidity : document.getElementById("humidity").value,
-									co2 : document.getElementById("co2").value
-								}
-							});
-						}
-					</script>
-					
-				</tr>
-			</table>
-				<input type="hidden" name="agentIpAddress" value="${agent.agentIpAddress}"/>
-		</td>
-	</div>
-	
-		<td style="vertical-align:top;">
-			<table>
-				<tr>
-					<td id="photoName" style="text-align:center"></td>
-					<td>
-						<input type="date" id="photoDate" value="" onchange="nowTime();" />
-						<script>
-							function nowTime() {
-								moveCondition = "now";
-								
-								document.getElementById("photoTime").value = "00";
-								document.getElementById("camera").value = "1";
-								
-								photoCall();
-							}
-							
-						</script>
-						<input type="hidden" id="photoTime" value=00 />
-						<input type="hidden" id="camera" value=1 />
-					</td>
-				</tr>
-				<tr>
-					<td colspan="2"><img id="photo" src="" style="width: 300px; min-width: 300px; heigtht: 300px; min-height: 300px"/>
-						<div id="imageNotice"></div>
-					</td>
-				</tr>
-				<tr style="text-align:center;">
-					<td><a href="#" onclick=downTime() id="previous"><h2> <-- </h2></a></td>
-					<script>
-						function downTime() {
-							moveCondition = "previous";
-							
-							photoCall();
-						}
-						
-					</script>
-					
-					<td><a href="#" onclick=upTime() id="next"><h2> --> </h2></a></td>
-					<script>
-						function upTime() {
-							moveCondition = "next";
-							
-							photoCall();
-						}
-						
-					</script>
-				</tr>
-				<script>
-					photoCall();
-					
-					function photoCall() {
-						$.ajax({
-				            url: "${pageContext.request.contextPath}/photo",
-				            type: "GET",
-				            data: {
-				            	ipAddress : document.getElementById("agentIpAddress").value, 
-				            	date : document.getElementById("photoDate").value,
-				            	time : document.getElementById("photoTime").value,
-				            	camera : document.getElementById("camera").value, 
-				            	move : moveCondition
-				            },
-				            success: function (obj) {
-				            	if (obj.exist == "underFlow") {
-				            		document.getElementById("imageNotice").innerText = "전 사진이 존재하지 않습니다.";
-				            		$("#previous").removeAttr("href");
-				            		
-				            	} else if (obj.exist == "overFlow") {
-				            		document.getElementById("imageNotice").innerText = "다음 사진이 존재하지 않습니다.";
-				            		$("#next").removeAttr("href");
-				            		
-				            	} else if (obj.exist == "noFile") {
-				            		document.getElementById("imageNotice").innerText = "해당 날짜의 사진이 존재하지 않습니다.";
-				            		$("#previous").removeAttr("href");
-				            		$("#next").removeAttr("href");
-				            		
-				            	} else {
-				            		$("#photo").attr("src", "/image/" + document.getElementById("agentIpAddress").value + "/" + obj.date + "/" + obj.time + "(" + obj.camera + ").jpg");
-				            		$("#previous").attr("href", "#");
-				            		$("#next").attr("href", "#");
-				            		
-				            		document.getElementById("imageNotice").innerText = "";
-				            	}
-				            	
-				            	document.getElementById("photoDate").value = obj.date;
-				            	document.getElementById("photoTime").value = obj.time;
-				            	document.getElementById("camera").value = obj.camera;
-				            	
-				            	document.getElementById("photoName").innerText = document.getElementById("photoTime").value + ":00 (" + document.getElementById("camera").value + "번 카메라)";
-				            }
-						});
-					}
-				</script>
-				</table>
-		</td>
-	</tr>
-	<tr>
-		<td rowspan="3">
-			<div id="measureData"></div>
-			<script>
-				measure();
-			
-				function leftPad(value) {
-				    if (value >= 10) {
-				        return value;
-				    }
+                    <div class="d-flex">
+                        <div class="dropdown d-none d-lg-inline-block ms-1">
+                            <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
+                                <i class="mdi mdi-fullscreen"></i>
+                            </button>
+                        </div>
 
-				    return '0' + value;
-				}
-				
-				function measure() {
-					let now = new Date();
-					let nowFormat = now.getFullYear() + "-" + leftPad(now.getMonth() + 1) + "-" + leftPad(now.getDate());
-					
-					let startTime = new Date();
-					startTime.setFullYear(startTime.getFullYear() - 1);
-					let startTimeFormat = startTime.getFullYear() + "-" + leftPad(startTime.getMonth() + 1) + "-" + leftPad(startTime.getDate());
-					
-					$.ajax({
-			            url: "${pageContext.request.contextPath}/measurement",
-			            type: "GET",
-			            data: {
-			            	ipAddress : document.getElementById("agentIpAddress").value, 
-			            	startTime : startTimeFormat,
-			            	endTime : nowFormat
-			            },
-			            success: function (rows) {
-			            	document.getElementById("measureData").innerText = "온도" + rows[0].temperature;
-			            }
-					});
-				}
-			</script>
-		</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td></td>
-		<td>
-			<table>
-				<tr>
-					<td>기준표</td>
-					<td><input type="date"/></td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
+                        <div class="dropdown d-inline-block">
+                        	<span class="d-none d-xl-inline-block ms-1">${user.name} 님</span>
+                        	
+                        	<a href="/logout">
+	                        	<button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+	                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	                                <span class="d-none d-xl-inline-block ms-1">로그아웃</span>
+	                            </button>
+                        	</a>
+                        </div>
 
+                        
+                    </div>
+                </div>
+            </header>
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-flex align-items-center justify-content-between">
+                                <h4 class="page-title mb-0 font-size-18">${agentUser.name}님의 에이전트 목록</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div>
+                <!-- End Page-content -->
+
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="text-sm-end d-none d-sm-block">
+                                    Design & Develop by KKH
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- end main content-->
+
+        </div>
+        <!-- END layout-wrapper -->
+
+    </div>
+    <!-- end container-fluid -->
+
+    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT -->
+    <script src="/assets/libs/jquery/jquery.min.js"></script>
+    <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="/assets/libs/node-waves/waves.min.js"></script>
+    <script src="/assets/libs/jquery-sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- apexcharts -->
+    <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- jquery.vectormap map -->
+    <script src="/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js"></script>
+
+    <script src="/assets/js/pages/dashboard.init.js"></script>
+
+    <script src="/assets/js/app.js"></script>
 
 </body>
+
 </html>
