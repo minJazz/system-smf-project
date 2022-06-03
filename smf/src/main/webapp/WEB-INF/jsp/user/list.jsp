@@ -1,146 +1,143 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ page isELIgnored="false" %>
 
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Insert title here</title>
+    <title>Agent List | SMF</title>
+	<jsp:include page="/WEB-INF/jsp/common/top.jsp"/>
+
+    <!-- jquery.vectormap css -->
+    <link href="/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+        type="text/css" />
+
 </head>
-<body>
-    <a href="/user"><input type="button" value="사용자 정보 목록" /></a>
-    <br/>
-    
-    <div style="float:right;">
-    	${user.name} 님
-    	<a href="/logout"><input type="button" value="로그아웃"/></a>
-    </div>
-    
-    <div>
-    <h2>사용자 정보 목록</h2> 
-    
-    </div>
-    
-    <hr/>
-  	    	          
-    <table>
-        <tr>
-            <td>
-              <div style="border:1; float:left; width:100px%;">
-              	     검색 조건
-	              <select id="name">
-	                  <option value="0" selected>이름</option>
-	                  <c:forEach items="${list}" var="row">
-	                      <option value="${row.name}">${row.name}</option>
-	                  </c:forEach>
-	              </select>
-	              <input type="text" id="phoneNumber" placeholder="전화번호" />
-	              <input type="button" value="검색" onclick="rendering()" />
-              </div>
-              <div style="border:1; float:right; width: 100px%;">
-                  <a href="/user/form"><input type="button" value="등록"></a>
-                  <input type="button" value="수정" onclick="editClick(tableValue)">
-                  <a><input type="button" value="삭제" id="deleteBtn" onclick="deleteClick()" /></a>
-              </div>
-            </td>
-        </tr>
-    </table>
-    
-    <br/>
-    <div id="table"></div>
-    
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
-	<br/>
 
-	<div id="pageTable"></div>
-	
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
-    
-    <script type="text/javascript" >
-    	var pageNo = 0;
-    
-    	function changePage(pageButtonId) {
-            pageNo = parseInt(pageButtonId);
+<body data-layout="horizontal">
+    <div class="container-fluid">
+        <!-- Begin page -->
+        <div id="layout-wrapper">
 
-            search();
-        }
-    	
-    	
-    	rendering();
-    	
-    	function deleteClick() {
-			var radioVal = $('input[name="radio"]:checked').val();
-        	
-        	var uniqueNo = "" + (radioVal+"").split("/")[1];
-        	
-        	var item = {
-            	"no" : uniqueNo
-            }
-    		$.ajax({
-                url: "${pageContext.request.contextPath}/user",
-                method: "DELETE",
-                contentType : "application/json; charset=UTF-8",
-                dataType: "JSON",
-                data: JSON.stringify(item), 
-                success: function (data) {
-                    rendering();
-                }
-            });
-    	}
-    	
-        function editClick(val) {
-        	var radioVal = $('input[name="radio"]:checked').val();
-        	
-        	var no = (radioVal+"").split("/")[1];
-     	    window.location.href = "http://localhost/user/" + no + "/form";
-        }
-    
-    
-		function rendering() {
-			xmlHttp = new XMLHttpRequest();
-			
-			var name = document.getElementById("name").value;
-			var phoneNumber = document.getElementById("phoneNumber").value;
-			
-			if (name != 0 && phoneNumber == null) {
-				xmlHttp.open('GET', 'http://localhost/user?&pageNo='+ pageNo + '&name='+name, true);
-			} else if (name == 0 && phoneNumber != null) {
-				xmlHttp.open('GET', 'http://localhost/user?&pageNo='+ pageNo + '&phoneNumber='+phoneNumber, true);
-			} else {
-				xmlHttp.open('GET', 'http://localhost/user?&pageNo='+ pageNo + '&name='+name+'&phoneNumber='+phoneNumber, true);
-			}
-			
-			xmlHttp.onreadystatechange = function() {
-				if (this.status == 200 && this.readyState == this.DONE) {
-					//sql문으로 읽어온 json 형식의 문자열
-					var data = xmlHttp.responseText;
-					//json문자열 파싱 작업
-					var parseData = JSON.parse(data);
-					console.log(parseData);
-					//html 변환 작업
-				    var text = "<table border='1'> <thead> <tr> <th>번호</th> <th>이름</th> <th>연락처</th> <th>이메일</th> <th>선택</th> </tr> </thead>";
-					for (var i = 1; i < parseData.length; i++) {
-						text += "<tbody id = 'tableValue'><tr><th>"
-								+ (i)
-								+ "</th><td><a href='/agent/list/" + parseData[i].no + "' >"
-								+ parseData[i].name + "</a></td><td>"
-								+ parseData[i].phoneNumber + "</td>"
-								+ "<td>" + parseData[i].mail + "</td>"
-								+ "<th><input type='radio' value=\"radio/" + parseData[i].no + "\" id=\"radio/" + parseData[i].no +  "\" name=\"radio\" class='checkBtn' </th></tr></tbody>";
-					}
-					text += "</table>";
-					document.getElementById("table").innerHTML = text;
-					document.getElementById("pageTable").innerHTML = parseData[0].name;
-				}
-			}
-			xmlHttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-			xmlHttp.send();
-		}
-	</script>
+            <header id="page-topbar">
+                <div class="navbar-header">
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-sm px-3 font-size-16 d-lg-none header-item waves-effect waves-light"
+                            data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+                    
+                        <div class="topnav">
+                            <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
+
+                                <div class="collapse navbar-collapse" id="topnav-menu-content">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle arrow-none" href="/user" id="topnav-dashboard"
+                                                role="button">
+                                                사용자 정보 목록 
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="dropdown d-none d-lg-inline-block ms-1">
+                            <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
+                                <i class="mdi mdi-fullscreen"></i>
+                            </button>
+                        </div>
+
+                        <div class="dropdown d-inline-block">
+                        	<span class="d-none d-xl-inline-block ms-1">${user.name} 님</span>
+                        	
+                        	<a href="/logout">
+	                        	<button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+	                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	                                <span class="d-none d-xl-inline-block ms-1">로그아웃</span>
+	                            </button>
+                        	</a>
+                        </div>
+
+                        
+                    </div>
+                </div>
+            </header>
+
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+
+                <div class="page-content">
+
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-flex align-items-center justify-content-between">
+                                <h4 class="page-title mb-0 font-size-18">${agentUser.name}님의 에이전트 목록</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
+
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div>
+                <!-- End Page-content -->
+
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="text-sm-end d-none d-sm-block">
+                                    Design & Develop by KKH
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- end main content-->
+
+        </div>
+        <!-- END layout-wrapper -->
+
+    </div>
+    <!-- end container-fluid -->
+
+    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT -->
+    <script src="/assets/libs/jquery/jquery.min.js"></script>
+    <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="/assets/libs/node-waves/waves.min.js"></script>
+    <script src="/assets/libs/jquery-sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- apexcharts -->
+    <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- jquery.vectormap map -->
+    <script src="/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js"></script>
+
+    <script src="/assets/js/pages/dashboard.init.js"></script>
+
+    <script src="/assets/js/app.js"></script>
+
 </body>
+
 </html>

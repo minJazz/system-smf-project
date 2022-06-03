@@ -35,8 +35,8 @@
             <if test="no != null and no != ''">
                 AND NO = #{no}
             </if>
-            <if test="phoneNumber != null and phoneNumber != ''">
-                AND PHONE_NUMBER = #{phoneNumber}
+            <if test="userPhoneNumber != null and userPhoneNumber != ''">
+                AND USER_PHONE_NUMBER = #{userPhoneNumber}
             </if>
         </where>
     </select>

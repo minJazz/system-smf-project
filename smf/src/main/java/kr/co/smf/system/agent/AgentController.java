@@ -35,8 +35,8 @@ public class AgentController {
 	@Autowired
 	private Navigator navigator;
 	
-	@GetMapping("/agent/list/{no}")
-	public ModelAndView viewAgentListForm(@PathVariable String no) {
+	@GetMapping("/agent")
+	public ModelAndView viewAgentListForm(@RequestParam String no) {
 		User user = new User();
 		user.setNo(Integer.valueOf(no));
 		
@@ -45,11 +45,9 @@ public class AgentController {
 		Map<String, String> condition = new HashMap<String, String>();
 		condition.put("userPhoneNumber", user.getPhoneNumber());
 		
-		List<Agent> list = agentService.viewAgentInfoList(condition);
-		
 		ModelAndView mav = new ModelAndView("/agent/list");
-		mav.addObject("user", user);
-		mav.addObject("list", list);
+		mav.addObject("agentUser", user);
+		mav.addObject("list", agentService.viewAgentInfoList(condition));
 		
 		return mav;
 	}

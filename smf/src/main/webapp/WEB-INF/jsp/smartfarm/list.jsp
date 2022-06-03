@@ -1,174 +1,142 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
-<html>
-<style>
-.left-box {
-  float: left;
-}
-.right-box {
-  float: right;
-}
-</style>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<!doctype html>
+<html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<title>스마트 팜 목록</title>
+    <title>Agent List | SMF</title>
+	<jsp:include page="/WEB-INF/jsp/common/top.jsp"/>
+
+    <!-- jquery.vectormap css -->
+    <link href="/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet"
+        type="text/css" />
 
 </head>
-<body>
-<div>
-	<div class="left-box">
-		<table>
-			<tr>
-				<td><th><a href="/smartfarm"><h2>스마트 팜 목록</h2></a></th></td>
-				<td> | </td>
-				<td><th><a href="/setting"><h2>생장환경 설정</h2></a></th></td>
-			</tr>
-		</table>
-	</div>
-	<div class="right-box">
-		<table>
-			<tr><br/></tr>
-			<tr>
-				<td><h2>${ user.name }</h2></td>
-				<td>
-					<form method="get" action="/logout">
-						<input type="submit" value="로그아웃" style="font-size:20px;"/>
-					</form>
-				</td>
-			</tr>
-		</table>
-	</div>
-</div>
 
-<input type="hidden" id="userPhone" value="${user.phoneNumber}"></input>
+<body data-layout="horizontal">
+    <div class="container-fluid">
+        <!-- Begin page -->
+        <div id="layout-wrapper">
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+            <header id="page-topbar">
+                <div class="navbar-header">
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-sm px-3 font-size-16 d-lg-none header-item waves-effect waves-light"
+                            data-bs-toggle="collapse" data-bs-target="#topnav-menu-content">
+                            <i class="fa fa-fw fa-bars"></i>
+                        </button>
+                    
+                        <div class="topnav">
+                            <nav class="navbar navbar-light navbar-expand-lg topnav-menu">
 
-<div class="left-box">
-	<h1>스마트 팜 목록</h1>
-</div>
+                                <div class="collapse navbar-collapse" id="topnav-menu-content">
+                                    <ul class="navbar-nav">
+                                        <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle arrow-none" href="/user" id="topnav-dashboard"
+                                                role="button">
+                                                사용자 정보 목록 
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+                    <div class="d-flex">
+                        <div class="dropdown d-none d-lg-inline-block ms-1">
+                            <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
+                                <i class="mdi mdi-fullscreen"></i>
+                            </button>
+                        </div>
 
-<hr/>
+                        <div class="dropdown d-inline-block">
+                        	<span class="d-none d-xl-inline-block ms-1">${user.name} 님</span>
+                        	
+                        	<button type="button" class="btn header-item waves-effect"
+								id="page-header-user-dropdown" data-bs-toggle="dropdown"
+								aria-haspopup="true" aria-expanded="false" onclick="location.href='/logout'">
+								<span class="d-none d-xl-inline-block ms-1">로그아웃</span>
+							</button>
+                        </div>
 
-<div class="right-box">
-<table>
-	<tr>
-		<td>
-			<input type="text" palceholder="스마트 팜 이름" id="agentName">
-		</td>
-		<td>
-			<button onclick="search()">검색</button>
-		</td>
-		
-	</tr>
-</table>
-</div>
+                        
+                    </div>
+                </div>
+            </header>
 
-<br/>
-<br/>
-<br/>
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
 
-<div id="table" class="left-box"></div>
+                <div class="page-content">
 
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
+                    <!-- start page title -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="page-title-box d-flex align-items-center justify-content-between">
+                                <h4 class="page-title mb-0 font-size-18">${agentUser.name}님의 에이전트 목록</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end page title -->
 
-<div id="pageTable"></div>
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    
+                                </div>
+                            </div>
+                        </div>
 
-<br/>
-<br/>
-<br/>
+                    </div>
+                    <!-- end row -->
 
-<script>
-	var pageNo = 0;
-	
-	search();
-	
-	function changePage(pageButtonId) {
-        pageNo = parseInt(pageButtonId);
+                </div>
+                <!-- End Page-content -->
 
-        search();
-    }
-	
-	function getData() {
-		var text;
-		var list;
-		if(xmlRequest.status == 200) {
-			text = xmlRequest.responseText;
-			list = JSON.parse(text);
-        }
-           
-        var tag = "<table border='2'>" 
-       		+ "<tr>"
-       		    + "<td>번호</td>"
-       		    + "<td>스마트 팜 이름</td>"
-       		    + "<td>구분</td>"
-       		    + "<td>온도 (°C)</td>"
-       		    + "<td>습도 (%)</td>"
-       		    + "<td>CO2 농도 (ppm)</td>"
-       		+ "</tr>"
-        for (var i = 0; i < list.length; i++) {
-        	if (list[i].agentName == null) {
-        		break;
-        	}
-        	
-        	tag += 
-        		"<tr>"
-        			+ "<td rowspan='2'>" + (i + 1) + "</td>"
-        			+ "<td rowspan='2'><a href='/smartfarm/" + list[i].agentNo + "'>" 
-        				+ list[i].agentName + "</a>"
-        			+ "</td>" 
-        			+ "<td>설정</td>"
-        			+ "<td>" + list[i].settingTemperature + "</td>"
-        			+ "<td>" + list[i].settingHumidity + "</td>"
-        			+ "<td>" + list[i].settingCo2 + "</td>"
-        		+ "</tr>"
-        		+ "<tr>"
-         			+ "<td>현재</td>"
-        			+ "<td>" + list[i].measureTemperature + "</td>"
-        			+ "<td>" + list[i].measureHumidity + "</td>"
-        			+ "<td>" + list[i].measureCo2 + "</td>"
-        		+ "</tr>";
-        }
-        
-        tag += "</table>";
-       	document.getElementById("table").innerHTML = tag;
+                <footer class="footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="text-sm-end d-none d-sm-block">
+                                    Design & Develop by KKH
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+            <!-- end main content-->
 
-       	document.getElementById("pageTable").innerHTML = list[0].navigator;
-	}
-	
-	function search() { 
-		console.log(document.getElementById('userPhone').value);
-		
-		xmlRequest = new XMLHttpRequest();
-		
-		xmlRequest.open("GET", "/smartfarm?" 
-				+ "agentName=" + document.getElementById('agentName').value
-				// + "&userPhoneNumber=" + document.getElementById('userPhone').value	TODO SESSTION 추가되면 주석 제거
-				+ "&pageNo=" + pageNo
-				, true);
-		xmlRequest.onreadystatechange = getData;
-		xmlRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-		xmlRequest.send();
-	}
-</script>
+        </div>
+        <!-- END layout-wrapper -->
+
+    </div>
+    <!-- end container-fluid -->
+
+    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT -->
+    <script src="/assets/libs/jquery/jquery.min.js"></script>
+    <script src="/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="/assets/libs/node-waves/waves.min.js"></script>
+    <script src="/assets/libs/jquery-sparkline/jquery.sparkline.min.js"></script>
+
+    <!-- apexcharts -->
+    <script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
+
+    <!-- jquery.vectormap map -->
+    <script src="/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js"></script>
+
+    <script src="/assets/js/pages/dashboard.init.js"></script>
+
+    <script src="/assets/js/app.js"></script>
 
 </body>
+
 </html>
