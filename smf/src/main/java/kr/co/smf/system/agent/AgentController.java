@@ -113,7 +113,7 @@ public class AgentController {
 	@ResponseBody
 	public List<Agent> removeAgent(
 			@RequestBody Map<String, String> condition) {
-		
+		//TODO navigator 추가
 		Agent agent = new Agent();
 		agent.setNo(Integer.valueOf(condition.get("no")));
 		agentService.deleteAgentInfo(agent);

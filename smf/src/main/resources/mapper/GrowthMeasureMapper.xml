@@ -33,7 +33,7 @@
 	                AND AGENT_IP_ADDRESS LIKE '%${agentIpAddress}%'
 	            </if>
 	            <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
-	                AND MEASURE_TIME BETWEEN TO_DATE(#{startTime}, 'YYYY-MM-DD') AND TO_DATE(#{endTime}, 'YYYY-MM-DD')
+	                AND MEASURE_TIME BETWEEN TO_DATE(#{startTime}, 'YYYY-MM-DD') AND TO_DATE(#{endTime}, 'YYYY-MM-DD') +  0.99999
 	            </if>
 	        </where>
         )

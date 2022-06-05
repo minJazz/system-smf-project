@@ -82,7 +82,7 @@ public class UserController {
 		user = userService.viewUser(user);
 
 		ModelAndView mav = new ModelAndView("/user/edit");
-		mav.addObject("user", user);
+		mav.addObject("serviceUser", user);
 
 		return mav;
 	}

@@ -9,7 +9,13 @@ public class Measurement implements Serializable {
     private int humidity;
     private int co2;
     
-    public Measurement() {
+    @Override
+	public String toString() {
+		return "Measurement [agentIpAddress=" + agentIpAddress + ", measureTime=" + measureTime + ", temperature="
+				+ temperature + ", humidity=" + humidity + ", co2=" + co2 + "]";
+	}
+
+	public Measurement() {
     }
     
 	public String getAgentIpAddress() {
