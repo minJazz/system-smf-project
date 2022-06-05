@@ -2,8 +2,6 @@ package kr.co.smf.system.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,13 +27,18 @@ public class PhotoUtil {
 
 	public void insertPhoto(MultipartFile multipartFile, Measurement measurement)
 			throws IllegalStateException, IOException {
-		LocalDate measureDate = LocalDate.parse(measurement.getMeasureTime(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
+		System.out.println("---->>>" + measurement.getMeasureTime());
+		
+		String[] time = measurement.getMeasureTime().split("[ ]");
+		System.out.println("---->>>" + time[0] + "---->>>" + time[1]);
+		
+//		LocalDate measureDate = LocalDate.parse(measurement.getMeasureTime(),
+//				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
+//
+//		LocalDateTime measureTime = LocalDateTime.parse(measurement.getMeasureTime(),
+//				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
 
-		LocalDateTime measureTime = LocalDateTime.parse(measurement.getMeasureTime(),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
-
-		String directoryPath = servletContext.getRealPath("/image") + File.separator + measurement.getAgentIpAddress() + File.separator + measureDate.toString();
+		String directoryPath = servletContext.getRealPath("/image") + File.separator + measurement.getAgentIpAddress() + File.separator + time[0];
 
 		File directory = new File(directoryPath);
 
@@ -43,8 +46,8 @@ public class PhotoUtil {
 			directory.mkdir();
 		}
 
-		File file = new File(directoryPath + File.separator + measureTime.getHour() + "("
-				+ multipartFile.getOriginalFilename() + ")" + ".jpg"); // ex) 192.168.120.0\\13(1).jpg
+		File file = new File(directoryPath + File.separator + time[1].split("[:]")[0] 
+				+ multipartFile.getOriginalFilename().split("[.]")[0] + ".jpg"); // ex) 192.168.120.0\\13(1).jpg
 
 		multipartFile.transferTo(file);
 	}

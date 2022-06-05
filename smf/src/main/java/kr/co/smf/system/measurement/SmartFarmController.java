@@ -1,7 +1,9 @@
 package kr.co.smf.system.measurement;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -75,36 +78,36 @@ public class SmartFarmController {
 				}
 			});
 
-			// thread.start(); // TODO 에이전트 구현 시 주석 해제
+			thread.start(); // TODO 에이전트 구현 시 주석 해제
 		}
 
-		/*
-		 * while (true) { if (agents.size() == settings.size() && agents.size() ==
-		 * measurements.size()) { break; } else { try { Thread.sleep(500); } catch
-		 * (InterruptedException e) { e.printStackTrace(); }
-		 * 
-		 * } }
-		 */ // TODO 에이전트 구현 시 주석 해제
+		while (true) {
+			if (agents.size() == settings.size() && agents.size() == measurements.size()) {
+				break;
+			} else {
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}
+		// TODO 에이전트 구현 시 주석 해제
 		for (Agent agent : agents) {
 			Map<String, String> element = new HashMap<String, String>();
 
 			element.put("agentNo", "" + agent.getNo());
 			element.put("agentName", agent.getAgentName());
-			/*
-			 * element.put("settingTemperature", "" +
-			 * settings.get(agent.getAgentIpAddress()).getTemperature());
-			 * element.put("settingHumidity", "" +
-			 * settings.get(agent.getAgentIpAddress()).getHumidity());
-			 * element.put("settingCo2", "" +
-			 * settings.get(agent.getAgentIpAddress()).getCo2());
-			 * 
-			 * element.put("measureTemperature", "" +
-			 * measurements.get(agent.getAgentIpAddress()).getTemperature());
-			 * element.put("measureHumidity", "" +
-			 * measurements.get(agent.getAgentIpAddress()).getHumidity());
-			 * element.put("measureCo2", "" +
-			 * measurements.get(agent.getAgentIpAddress()).getCo2());
-			 */ // TODO 에이전트 구현 시 주석 해제
+
+			element.put("settingTemperature", "" + settings.get(agent.getAgentIpAddress()).getTemperature());
+			element.put("settingHumidity", "" + settings.get(agent.getAgentIpAddress()).getHumidity());
+			element.put("settingCo2", "" + settings.get(agent.getAgentIpAddress()).getCo2());
+
+			element.put("measureTemperature", "" + measurements.get(agent.getAgentIpAddress()).getTemperature());
+			element.put("measureHumidity", "" + measurements.get(agent.getAgentIpAddress()).getHumidity());
+			element.put("measureCo2", "" + measurements.get(agent.getAgentIpAddress()).getCo2());
+			// TODO 에이전트 구현 시 주석 해제
 			responseList.add(element);
 		}
 
@@ -133,24 +136,18 @@ public class SmartFarmController {
 
 		agent = agentService.viewAgentInfo(agent);
 		mav.addObject(agent);
-		/*
-		 * try { mav.addObject("setting", systemUtil.requestRealTimeGrowthInfo(agent));
-		 * } catch (IOException e) { e.printStackTrace(); // TODO 예외 처리 }
-		 */
 
-		//
-		Setting setting = new Setting();
-		setting.setUserPhoneNumber("01051199268");
-		setting.setSettingName("느타리버섯");
-		mav.addObject("setting", settingService.viewSetting(setting));
+		try {
+			mav.addObject("setting", systemUtil.requestRealTimeGrowthInfo(agent));
+		} catch (IOException e) {
+			e.printStackTrace(); // TODO 예외 처리 }
 
-		// TODO 모데이터... 삭제 예정	현재 설정한 값으로 변경
+			Map<String, String> condition = new HashMap<String, String>();
+			condition.put("userPhoneNumber", agent.getUserPhoneNumber());
 
-		Map<String, String> condition = new HashMap<String, String>();
-		condition.put("userPhoneNumber", agent.getUserPhoneNumber());
+			mav.addObject("settings", settingService.viewSettingList(condition));
 
-		mav.addObject("settings", settingService.viewSettingList(condition));
-
+		}
 		return mav;
 	}
 
@@ -184,27 +181,39 @@ public class SmartFarmController {
 		return measurementService.viewMeasurementList(condition);
 	}
 
-	@PostMapping("/record-info")
+	@PostMapping(path = "/record-info", consumes = { "multipart/form-data" })
 	@ResponseBody
-	public Map<String, String> addMeasureInfo(
-			@RequestParam("photo") MultipartFile multipartFile, 
-			@RequestParam Measurement measurement) {
+	public Map<String, String> addMeasureInfo(@RequestPart(value = "photo") MultipartFile multipartFile,
+			@RequestPart(value = "measurement", required = false) String data) {
+
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+		String time = dateFormat.format(Calendar.getInstance().getTime());
+
+		String[] datas = data.split("[:]");
+
+		Measurement measurement = new Measurement();
+		measurement.setAgentIpAddress(datas[0]);
+		measurement.setCo2(Integer.valueOf(datas[1]));
+		measurement.setHumidity(Integer.valueOf(datas[2]));
+		measurement.setTemperature(Double.valueOf(datas[3]));
+		measurement.setMeasureTime(time);
+
 		Map<String, String> response = new HashMap<String, String>();
-		
+
 		if (measurementService.addMeasurement(measurement)) {
 			try {
 				photoUtil.insertPhoto(multipartFile, measurement);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			response.put("code", "200");
 			response.put("message", "ok");
 		} else {
 			response.put("code", "300");
 			response.put("message", "fail");
 		}
-		
+
 		return response;
 	}
 
