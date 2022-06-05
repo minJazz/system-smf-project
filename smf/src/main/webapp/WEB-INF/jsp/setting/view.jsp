@@ -105,7 +105,7 @@
 							<div class="card">
 								<div class="card-body">
 									<div id=settingList class="col-3">
-										<select class="form-control select2" name="settingName"
+										<select class="form-select" name="settingName"
 											id="settingName" onchange="sendSettingName(this.value);">
 											<option value="add">Select</option>
 											<c:forEach items="${settingList}" var="list">
@@ -113,65 +113,96 @@
 											</c:forEach>
 										</select>
 									</div>
-									
-									<br/>
 
-									<div id=settingTable class="left-box">
-										<table class="table mb-0">
-											<thead class="table-light">
-												<tr>
-													<th>생장환경 설정 명</th>
-													<th>온도</th>
-													<th>습도</th>
-													<th>CO2 농도</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td><input type="text" class="form-control" required
-														placeholder="Type something" name="settingName"
-														id="nameText" /></td>
-													<td>
-														<div>
-															<input data-parsley-type="number" type="text"
-																class="form-control" required
-																placeholder="Enter only numbers" name="temperature"
-																id="temperatureText" />
+									<br />
+									<form class="custom-validation" action="#">
+										<div id=settingTable class="left-box">
+											<table class="table mb-0">
+												<thead class="table-light">
+													<tr>
+														<th>생장환경 설정 명</th>
+														<th>온도</th>
+														<th>습도</th>
+														<th>CO2 농도</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td><input type="text" class="form-control" required
+															placeholder="Type something" name="settingName"
+															id="nameText" /></td>
+														<td>
+															<div>
+																<input data-parsley-type="number" type="text"
+																	class="form-control" required
+																	placeholder="Enter only numbers" name="temperature"
+																	id="temperatureText" />
+															</div>
+														</td>
+														<td>
+															<div>
+																<input data-parsley-type="number" type="text"
+																	class="form-control" required
+																	placeholder="Enter only numbers" name="humidity"
+																	id="humidityText" />
+															</div>
+														</td>
+														<td>
+															<div>
+																<input data-parsley-type="number" type="text"
+																	class="form-control" required
+																	placeholder="Enter only numbers" name="co2"
+																	id="co2Text" />
+															</div>
+														</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+
+										<div class="row" id=updateButton style="float: right;">
+											<div class="col-sm-12 col-md-12 col-xl-12">
+												<div class="my-12 text-center">
+													<button type="submit"
+														class="btn btn-outline-dark waves-effect waves-light"
+														onclick="updateSetting()" style="margin-right:6px;">갱신</button>
+													<button type="button" value="삭제" id="deleteBtn"
+														data-bs-toggle="modal"
+														data-bs-target=".bs-example-modal-center"
+														class="btn btn-outline-dark waves-effect waves-light"
+														style="float: right; margin-right: 10px;">삭제</button>
+												</div>
+
+												<div class="modal fade bs-example-modal-center"
+													tabindex="-1" role="dialog"
+													aria-labelledby="mySmallModalLabel" aria-hidden="true">
+													<div class="modal-dialog modal-dialog-centered">
+														<div class="modal-content">
+															<div class="modal-header">
+																<h5 class="modal-title mt-0">삭제 확인</h5>
+																<button type="button" class="btn-close"
+																	data-bs-dismiss="modal" aria-label="Close"></button>
+															</div>
+															<div class="modal-body" style="text-align: center;">
+																<p>해당 설정을 정말로 삭제하시겠습니까?</p>
+																<button type="button" onclick="deleteSetting()"
+																	class="btn btn-outline-dark waves-effect waves-light"
+																	data-bs-dismiss="modal" aria-label="Close">예</button>
+																<button type="button"
+																	class="btn btn-outline-dark waves-effect waves-light"
+																	data-bs-dismiss="modal" aria-label="Close">아니요</button>
+															</div>
 														</div>
-													</td>
-													<td>
-														<div>
-															<input data-parsley-type="number" type="text"
-																class="form-control" required
-																placeholder="Enter only numbers" name="humidity"
-																id="humidityText" />
-														</div>
-													</td>
-													<td>
-														<div>
-															<input data-parsley-type="number" type="text"
-																class="form-control" required
-																placeholder="Enter only numbers" name="co2"
-																id="co2Text" />
-														</div>
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+														<!-- /.modal-content -->
+													</div>
+													<!-- /.modal-dialog -->
+												</div>
+												<!-- /.modal -->
+											</div>
 
-									<div id=updateButton style="float: right;">
-										<button type="button"
-											class="btn btn-outline-dark waves-effect waves-light"
-											onclick="updateSetting()">갱신</button>
-										<button type="button"
-											class="btn btn-outline-dark waves-effect waves-light"
-											onclick="deleteSetting()">삭제</button>
-										</tr>
-										</table>
-									</div>
+										</div>
 
-
+									</form>
 								</div>
 							</div>
 						</div>
@@ -186,8 +217,8 @@
 					<div class="container-fluid">
 						<div class="row">
 							<div class="col-sm-12">
-								<div class="text-sm-end d-none d-sm-block">
-								Design & Develop by KKH</div>
+								<div class="text-sm-end d-none d-sm-block">Design &
+									Develop by KKH</div>
 							</div>
 						</div>
 					</div>
@@ -209,15 +240,8 @@
 			var humidity = document.getElementById('humidityText').value;
 			var co2 = document.getElementById('co2Text').value;
 
-			if (settingName == "") {
-				alert("생장환경 설정 이름을 입력하시오");
-			} else if (temperature == "") {
-				alert("온도를 입력하시오");
-			} else if (humidity == "") {
-				alert("습도를 입력하시오");
-			} else if (co2 == "") {
-				alert("co2를 입력하시오");
-			} else {
+			if (settingName != "" && temperature != "" && humidity != ""
+					&& co2 != "") {
 				xmlRequest = new XMLHttpRequest();
 
 				var setting = {
@@ -234,9 +258,7 @@
 				xmlRequest.setRequestHeader("Content-Type",
 						"application/json;charset=UTF-8");
 				xmlRequest.send(settingJson);
-
 			}
-
 		}
 	</script>
 
@@ -270,9 +292,9 @@
 
 			var settingName = document.getElementById('nameText').value;
 
-			var tag = "<select name = 'settingName'" + "id = 'settingName' "
+			var tag = "<select class='form-select' name = 'settingName'"
 					+ "onchange= 'sendSettingName(this.value);'>"
-					+ "<option value = 'add'>생장환경 설정 추가</option>"
+					+ "<option value = 'add'>Select</option>"
 
 			for (var i = 0; i < json.length; i++) {
 				console.log(settingName);
@@ -298,10 +320,10 @@
 				var json = JSON.parse(text);
 			}
 
-			var tag = "<select name = 'settingName'"
+			var tag = "<select class='form-select'  name = 'settingName'"
 					+ "id = 'settingName' "
 					+ "onchange= 'sendSettingName(this.value);'>"
-					+ "<option value = 'add'" + " 'selected' >생장환경 설정 추가</option>"
+					+ "<option value = 'add' selected>Select</option>"
 
 			for (var i = 0; i < json.length; i++) {
 				tag += "<option value="+json[i].settingName+ ">"
@@ -312,6 +334,7 @@
 			sendSettingName("add");
 		}
 	</script>
+
 
 	<script>
 		function sendSettingName(settingName) {
@@ -326,14 +349,11 @@
 					"application/json;charset=UTF-8");
 			xmlRequest.send();
 		}
-	</script>
 
-	<script>
 		function getSettingData() {
-			if (xmlRequest.status == 200) {
-				var text = xmlRequest.responseText
-				var json = JSON.parse(text);
-			}
+			console.log("request : " + xmlRequest.responseText);
+			var text = xmlRequest.responseText
+			var responseJson = JSON.parse(text);
 
 			var tag = "";
 			tag += "<table class='table mb-0'>"
@@ -348,17 +368,36 @@
 					+ "<tbody>"
 					+ "<tr>"
 					+ "<td>"
-					+ "<input type= 'text' "+ "name = 'settingName'" + "id= 'nameText'"+ "value = '" + json.settingName + "' />"
+					+ "<div>"
+					+ '<input type="text"'
+					+	' class="form-control" required'
+					+	' placeholder="Type something" name="settingName"'
+					+	' id="nameText" value="'+ responseJson.settingName + '"/>'
+					+ '</div>'
 					+ "</td>"
 					+ "<td>"
-					+ "<input type= 'text' "+ "name = 'temperature'" + "id= 'temperatureText'"+ "value = '" + json.temperature + "'/>"
+					+ "<div>"
+					+ '<input data-parsley-type="number" type="text"'
+					+	' class="form-control" required'
+					+	' placeholder="Enter only numbers" name="temperature"'
+					+	' id="temperatureText" value="'+ responseJson.temperature + '"/>'
+					+ '</div>'
 					+ "</td>"
 					+ "<td>"
-					+ "<input type= 'text' "+ "name = 'humidity'" + "id= 'humidityText'"+ "value = '" + json.humidity + "'/>"
+					+ "<div>"
+					+ '<input data-parsley-type="number" type="text"'
+					+	' class="form-control" required'
+					+	' placeholder="Enter only numbers" name="humidity"'
+					+	' id="humidityText" value="'+ responseJson.humidity + '"/>'
+					+ '</div>'
 					+ "</td>"
 					+ "<td>"
-					+ "<input type= 'text' "+ "name = 'co2'" + "id= 'co2Text'"+ "value='" + json.co2 + "'/>"
-					+ "</td>" + "</tr>" + "</tbody>" + "</table>";
+					+ "<div>"
+					+ '<input data-parsley-type="number" type="text"'
+					+	' class="form-control" required'
+					+	' placeholder="Enter only numbers" name="co2"'
+					+	' id="co2Text" value="'+ responseJson.co2 + '"/>'
+					+ '</div>' + "</td>" + "</tr>" + "</tbody>" + "</table>";
 			document.getElementById("settingTable").innerHTML = tag;
 		}
 	</script>
@@ -394,8 +433,6 @@
 
 	<!-- form advanced init -->
 	<script src="/assets/js/pages/form-advanced.init.js"></script>
-
-	<script src="/assets/js/app.js"></script>
 
 </body>
 

@@ -32,7 +32,7 @@ public class GrowthSettingController {
 		condition.put("userPhoneNumber", user.getPhoneNumber());
 		List<Setting> settingList = settingService.viewSettingList(condition);
 
-		ModelAndView modelAndView = new ModelAndView("setting/view2");
+		ModelAndView modelAndView = new ModelAndView("setting/view");
 		modelAndView.addObject("settingList", settingList);
 		return modelAndView;
 	}

@@ -144,7 +144,7 @@ public class SmartFarmController {
 		setting.setSettingName("느타리버섯");
 		mav.addObject("setting", settingService.viewSetting(setting));
 
-		// TODO 모데이터... 삭제 예정
+		// TODO 모데이터... 삭제 예정	현재 설정한 값으로 변경
 
 		Map<String, String> condition = new HashMap<String, String>();
 		condition.put("userPhoneNumber", agent.getUserPhoneNumber());

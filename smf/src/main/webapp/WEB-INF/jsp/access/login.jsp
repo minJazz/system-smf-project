@@ -13,7 +13,7 @@
 </head>
 
 <body>
-	<div class="account-pages my-5 pt-sm-5">
+	<div class="account-pages my-1 pt-sm-5">
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-md-8 col-lg-6 col-xl-5">
@@ -31,7 +31,7 @@
 								<form class="form-horizontal" action="/login" method="POST" name="login">
 
 									<div class="mb-3">
-										<label class="form-label" for="username">phoneNumber</label> <input
+										<label class="form-label" for="username">PhoneNumber</label> <input
 											type="text" class="form-control" id="phoneNumber"
 											placeholder="Enter phoneNumber" name = "phoneNumber" value = "${remember}">
 									</div>

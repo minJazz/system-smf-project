@@ -34,7 +34,14 @@
 	    , CO2
 	    , SETTING_TIME
 	    FROM GROWTH_SETTING_INFO
-	    WHERE USER_PHONE_NUMBER LIKE '${userPhoneNumber}' AND SETTING_NAME LIKE '${settingName}' 
+	    <where>
+            <if test="userPhoneNumber != null and userPhoneNumber != ''">
+                AND USER_PHONE_NUMBER LIKE '${userPhoneNumber}'
+            </if>
+            <if test="settingName != null and settingName != ''">
+                AND SETTING_NAME LIKE '${settingName}'
+            </if>
+       </where>
 	    
 	</select>
 	
