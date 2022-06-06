@@ -3,7 +3,7 @@ package kr.co.smf.system.measurement;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -192,9 +192,15 @@ public class SmartFarmController {
 	public Map<String, String> addMeasureInfo(@RequestPart(value = "photo") MultipartFile multipartFile,
 			@RequestPart(value = "measurement", required = false) String data) {
 
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-		String time = dateFormat.format(Calendar.getInstance().getTime());
+		SimpleDateFormat format = new SimpleDateFormat ("yyyy-MM-dd HH:mm:ss");
 
+		Date date = new Date();
+		
+		String time = format.format(date);
+		
+        SimpleDateFormat formatter = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String today = formatter.format(new java.util.Date());
+    	
 		String[] datas = data.split("[:]");
 
 		Measurement measurement = new Measurement();
@@ -203,8 +209,10 @@ public class SmartFarmController {
 		measurement.setCo2(Integer.valueOf(datas[1]));
 		measurement.setHumidity(Integer.valueOf(datas[2]));
 		measurement.setTemperature(Double.valueOf(datas[3]));
-		measurement.setMeasureTime(time);
+		measurement.setMeasureTime(today);
 
+		System.out.println("________::::" + measurement);
+		
 		Map<String, String> response = new HashMap<String, String>();
 
 		if (measurementService.addMeasurement(measurement)) {

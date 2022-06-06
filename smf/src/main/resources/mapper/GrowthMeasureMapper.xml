@@ -9,7 +9,7 @@
         INSERT INTO GROWTH_MEASURE_INFO
             (AGENT_IP_ADDRESS, MEASURE_TIME, TEMPERATURE, HUMIDITY, CO2)
         VALUES
-            (#{agentIpAddress}, #{measureTime}, #{temperature}, #{humidity}, #{co2})
+            (#{agentIpAddress}, SYSDATE, #{temperature}, #{humidity}, #{co2})
     </insert>
     
     <select id="selectAllGrowthMeasureInfo"

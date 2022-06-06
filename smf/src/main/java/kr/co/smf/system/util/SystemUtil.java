@@ -33,7 +33,7 @@ public class SystemUtil {
 	
 	public Measurement requestRealTimeGrowthInfo(Agent agent) throws IOException {
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/agent/measure?agentIpAddress=" + agent.getAgentIpAddress())
+				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/measure?agentIpAddress=" + agent.getAgentIpAddress())
                 .build();
 		
 		Response response = client.newCall(request).execute();
@@ -58,13 +58,16 @@ public class SystemUtil {
 	
 	public Setting requestNowGrowthSetting(Agent agent) throws IOException {
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/agent/setting?agentIpAddress=" + agent.getAgentIpAddress())
+				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/setting?agentIpAddress=" + agent.getAgentIpAddress())
                 .build();
 		
 		Response response = client.newCall(request).execute();
 		
 		ResponseBody responseBody = response.body();
-		JSONObject jsonResponse = new JSONObject(responseBody.string());
+		
+		String test = responseBody.string();
+		
+		JSONObject jsonResponse = new JSONObject(test);
 		
 		Setting setting = new Setting();
 		setting.setTemperature(jsonResponse.getDouble("temperature"));
@@ -79,7 +82,7 @@ public class SystemUtil {
         RequestBody body = RequestBody.create(JSON, json);
 		
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/agent/setting")
+				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/setting")
 				.post(body)
                 .build();
 		
@@ -99,7 +102,7 @@ public class SystemUtil {
         RequestBody body = RequestBody.create(JSON, json);
 		
 		Request request = new Request.Builder()
-				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/agent/user")
+				.url("http://" + agent.getAgentIpAddress() + ":8080/agent/user")
 				.put(body)
                 .build();
 		
