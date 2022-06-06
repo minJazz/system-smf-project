@@ -67,13 +67,18 @@ public class SmartFarmController {
 
 		for (Agent agent : agents) {
 			Thread thread = new Thread(new Runnable() {
+				Setting setting = new Setting();
+				Measurement measurement = new Measurement();
 				@Override
 				public void run() {
 					try {
-						settings.put(agent.getAgentIpAddress(), systemUtil.requestNowGrowthSetting(agent));
-						measurements.put(agent.getAgentIpAddress(), systemUtil.requestRealTimeGrowthInfo(agent));
+						setting = systemUtil.requestNowGrowthSetting(agent);
+						measurement = systemUtil.requestRealTimeGrowthInfo(agent);
 					} catch (IOException e) {
-						e.printStackTrace(); // TODO 예외 처리
+						System.out.println("fail to request AgentNowInfo : " + e.getMessage());
+					} finally {
+						settings.put(agent.getAgentIpAddress(), setting);
+						measurements.put(agent.getAgentIpAddress(), measurement);
 					}
 				}
 			});
@@ -86,7 +91,7 @@ public class SmartFarmController {
 				break;
 			} else {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(200);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -137,17 +142,20 @@ public class SmartFarmController {
 		agent = agentService.viewAgentInfo(agent);
 		mav.addObject(agent);
 
+		Setting setting = new Setting();
 		try {
-			mav.addObject("setting", systemUtil.requestRealTimeGrowthInfo(agent));
+			setting = systemUtil.requestNowGrowthSetting(agent);
 		} catch (IOException e) {
-			e.printStackTrace(); // TODO 예외 처리 }
-
-			Map<String, String> condition = new HashMap<String, String>();
-			condition.put("userPhoneNumber", agent.getUserPhoneNumber());
-
-			mav.addObject("settings", settingService.viewSettingList(condition));
-
+			System.out.println("fail to requestNoGrowthSetting : " + e.getMessage());
+		} finally {
+			mav.addObject("setting", setting);
 		}
+
+		Map<String, String> condition = new HashMap<String, String>();
+		condition.put("userPhoneNumber", agent.getUserPhoneNumber());
+
+		mav.addObject("settings", settingService.viewSettingList(condition));
+		
 		return mav;
 	}
 

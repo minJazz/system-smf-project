@@ -13,6 +13,7 @@ public class MvcConfig implements WebMvcConfigurer {
 	@Bean
 	public HiddenHttpMethodFilter httpMethodFilter() {
 		HiddenHttpMethodFilter hiddenHttpMethodFilter = new HiddenHttpMethodFilter();
+		
 		return hiddenHttpMethodFilter;
 	}
 
