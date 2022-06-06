@@ -201,8 +201,8 @@
 										</script>
 										</div>
 
-
-										<br />
+										<input type="hidden" id="settingName"
+											value="${setting.settingName}" /> <br />
 
 										<div class="col-md-11 row" style="margin-left: 5px;">
 											<table class="table mb-0" height="400">
@@ -248,7 +248,7 @@
 											</table>
 										</div>
 										<div class="col-sm-12 col-md-2" style="float: right;">
-											<button type="button"
+											<button type="button" id="controlBtn"
 												class="btn btn-lg btn-outline-dark waves-effect waves-light"
 												onclick="control()" style="float: center;">제어</button>
 										</div>
@@ -274,18 +274,58 @@
 									</div>
 
 									<div class="col-sm-12 col-md-6" style="float: left;">
-										<div class="col-sm-12 col-md-12" style="float: right;">
-											<label id="photoName" for="example-date-input"
-												class="col-md-4 col-form-label"></label>
-
-											<div class="col-sm-8 col-md-8" style="float: right;">
-												<input class="form-control" id="photoDate" type="date"
-													value="" onchange="nowTime();" />
-												<script>
+										<div class="row"></div>
+										<div class="col-sm-12 col-md-12 row" style="float: right;">
+											<div class="col-sm-3 col-md-3">
+												<select class="form-select" name="photoTime" id="photoTime" onchange="nowTime();">
+													<option value="00" selected>00:00</option>
+													<option value="01">01:00</option>
+													<option value="02">02:00</option>
+													<option value="03">03:00</option>
+													<option value="04">04:00</option>
+													<option value="05">05:00</option>
+													<option value="06">06:00</option>
+													<option value="07">07:00</option>
+													<option value="08">08:00</option>
+													<option value="09">09:00</option>
+													<option value="10">10:00</option>
+													<option value="11">11:00</option>
+													<option value="12">12:00</option>
+													<option value="13">13:00</option>
+													<option value="14">14:00</option>
+													<option value="15">15:00</option>
+													<option value="16">16:00</option>
+													<option value="17">17:00</option>
+													<option value="18">18:00</option>
+													<option value="19">19:00</option>
+													<option value="20">20:00</option>
+													<option value="21">21:00</option>
+													<option value="22">22:00</option>
+													<option value="23">23:00</option>
+												</select>
+											</div>
+											<script>
 													function nowTime() {
 														moveCondition = "now";
 														
-														document.getElementById("photoTime").value = "00";
+														document.getElementById("camera").value = "1";
+														
+														photoCall();
+													}
+													
+												</script>
+											<div class="col-sm-3 col-md-3">
+												<label id="photoName" for="example-date-input"
+													class="col-form-label"></label>
+											</div>
+											<div class="col-sm-6 col-md-6" style="float: right;">
+												<input class="form-control" id="photoDate" type="date"
+													value="" onchange="nowDate();" />
+												<script>
+													function nowDate() {
+														moveCondition = "now";
+														
+														$('#photoTime').val('00').prop("selected",true);
 														document.getElementById("camera").value = "1";
 														
 														photoCall();
@@ -293,8 +333,7 @@
 													
 												</script>
 
-												<input type="hidden" id="photoTime" value=00 /> <input
-													type="hidden" id="camera" value=1 />
+												<input type="hidden" id="camera" value=1 />
 											</div>
 										</div>
 										<br /> <br /> <br />
@@ -344,14 +383,16 @@
 											<div class="col-sm-6 col-md-6"></div>
 
 											<div class="col-sm-2 col-md-2">
-												<select class="form-select" name="timeCondition" id="timeCondition" onchange="measure();">
+												<select class="form-select" name="timeCondition"
+													id="timeCondition" onchange="measure();">
 													<option value="month" selected>월별</option>
 													<option value="date">일별</option>
 													<option value="hour">시간별</option>
 												</select>
 											</div>
 											<div class="col-sm-4 col-md-4">
-												<input class="form-control" id="conditionDate" type="date" onchange="measure();"/>
+												<input class="form-control" id="conditionDate" type="date"
+													onchange="measure();" />
 											</div>
 										</div>
 									</div>
@@ -396,13 +437,24 @@
 		src="https://cdn.fusioncharts.com/fusioncharts/latest/fusioncharts.js"></script>
 	<script type="text/javascript"
 		src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
-	<script type="text/javascript">
-	document.getElementById("conditionDate").value=new Date().toISOString().slice(0, 10);
+	<script>
+	var date = new Date();
+	var yyyy = date.getFullYear();
+	var mm = date.getMonth()+1 > 9 ? date.getMonth()+1 : '0' + (date.getMonth()+1);
+	var dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
+	
+	document.getElementById("conditionDate").value = yyyy+"-"+mm+"-"+dd;
 	
 	photoCall();
 	measure();
 	
+	if (document.getElementById("settingName").value == "FAIL_TO_REQUEST_NOW_GROWTH_SETTING") {
+		$("#controlBtn").attr("disabled", true);
+	}
+	
 	function photoCall() {
+		console.log("time : " + document.getElementById("photoTime").value);
+		
 		$.ajax({
             url: "${pageContext.request.contextPath}/photo",
             type: "GET",
@@ -439,10 +491,10 @@
             	}
             	
             	document.getElementById("photoDate").value = obj.date;
-            	document.getElementById("photoTime").value = obj.time;
+            	$('#photoTime').val(obj.time).prop("selected",true);
             	document.getElementById("camera").value = obj.camera;
             	
-            	document.getElementById("photoName").innerText = document.getElementById("photoTime").value + ":00 (" + document.getElementById("camera").value + "번 카메라)";
+            	document.getElementById("photoName").innerText = document.getElementById("camera").value + "번 카메라";
             }
 		});
 	}
