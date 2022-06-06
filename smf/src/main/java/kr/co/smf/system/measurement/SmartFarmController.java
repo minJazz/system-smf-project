@@ -3,6 +3,7 @@ package kr.co.smf.system.measurement;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -149,6 +150,8 @@ public class SmartFarmController {
 		} catch (IOException e) {
 			System.out.println("fail to requestNoGrowthSetting : " + e.getMessage());
 		} finally {
+			setting.setSettingName("FAIL_TO_REQUEST_NOW_GROWTH_SETTING");
+			
 			mav.addObject("setting", setting);
 		}
 

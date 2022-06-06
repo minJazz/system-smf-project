@@ -3,6 +3,7 @@ package kr.co.smf.system.util;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -27,7 +28,10 @@ public class SystemUtil {
 	private ObjectMapper objectMapper;
 	
 	public SystemUtil() {
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(2, TimeUnit.SECONDS)
+                .writeTimeout(2, TimeUnit.SECONDS)
+                .readTimeout(2, TimeUnit.SECONDS).build();
         objectMapper = new ObjectMapper();
 	}
 	

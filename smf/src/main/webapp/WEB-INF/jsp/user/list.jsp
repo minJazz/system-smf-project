@@ -241,6 +241,8 @@
 					rendering();
 				}
 			});
+			
+			changeRadio();
 		}
 
 		function editClick(val) {
@@ -251,7 +253,7 @@
 		}
 
 		function changeRadio() {
-			if ($('input[name="radio"]:checked').length == 0) {
+			if ($('input[name="radio"]:checked').length < 1) {
 				$("#editButton").attr("disabled", true);
 				$("#deleteBtn").attr("disabled", true);
 			} else {

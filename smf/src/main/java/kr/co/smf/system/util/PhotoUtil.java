@@ -93,7 +93,7 @@ public class PhotoUtil {
 				}
 			}
 		} else if ("now".equals(move)) {
-			filePath = directoryPath + date + File.separator + "00(1).jpg";
+			filePath = directoryPath + date + File.separator + time + "(1).jpg";
 
 			if (!new File(filePath).exists()) {
 				exist = "noFile";
