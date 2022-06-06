@@ -148,7 +148,7 @@
 												<button type="button"
 													class="btn btn-outline-dark waves-effect waves-light"
 													style="float: right; margin-right: 10px;"
-													" onclick="editClick(tableValue)">수정</button>
+													 onclick="editClick(tableValue)">수정</button>
 
 											</div>
 											<div class="md-3">
@@ -250,6 +250,12 @@
 			window.location.href = "http://localhost/user/" + no + "/form";
 		}
 
+		function changeRadio() {
+			if ($('input[name="radio"]:checked').length == 0) {
+			    // do something here
+			}
+		}
+		
 		function rendering() {
 			xmlHttp = new XMLHttpRequest();
 
@@ -299,6 +305,8 @@
 			xmlHttp.setRequestHeader("Content-Type",
 					"application/json;charset=UTF-8");
 			xmlHttp.send();
+
+			changeRadio();
 		}
 	</script>
 
@@ -311,17 +319,8 @@
 	<script src="/assets/libs/jquery-sparkline/jquery.sparkline.min.js"></script>
 
 	<!-- apexcharts -->
-	<script src="/assets/libs/apexcharts/apexcharts.min.js"></script>
 
 	<!-- jquery.vectormap map -->
-	<script
-		src="/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
-	<script
-		src="/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-us-merc-en.js"></script>
-
-	<script src="/assets/js/pages/dashboard.init.js"></script>
-
-	<script src="/assets/js/app.js"></script>
 
 </body>
 
