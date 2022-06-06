@@ -69,6 +69,7 @@ public class SmartFarmController {
 			Thread thread = new Thread(new Runnable() {
 				Setting setting = new Setting();
 				Measurement measurement = new Measurement();
+
 				@Override
 				public void run() {
 					try {
@@ -155,7 +156,7 @@ public class SmartFarmController {
 		condition.put("userPhoneNumber", agent.getUserPhoneNumber());
 
 		mav.addObject("settings", settingService.viewSettingList(condition));
-		
+
 		return mav;
 	}
 
@@ -184,7 +185,105 @@ public class SmartFarmController {
 	@GetMapping(path = "/measurement")
 	@ResponseBody
 	public List<Measurement> viewMeasureInfo(@RequestParam Map<String, String> condition) {
-		return measurementService.viewMeasurementList(condition);
+		List<Measurement> measurements = measurementService.viewMeasurementList(condition);
+
+		List<Measurement> resultMeasurements = new ArrayList<Measurement>();
+		List<Integer> bufferSize = new ArrayList<Integer>();
+
+		if ("month".equals(condition.get("timeCondition"))) {
+			int startMonth = Integer.parseInt(condition.get("startTime").split("-")[1]);
+
+			for (int i = 0; i < 12; i++) {
+				resultMeasurements.add(new Measurement());
+				bufferSize.add(0);
+			}
+
+			for (Measurement measurement : measurements) {
+				int month = Integer.parseInt(measurement.getMeasureTime().split("-")[1]);
+
+				int index = month - startMonth < 0 ? month - startMonth + 12 : month - startMonth;
+
+				Measurement measurementBuffer = resultMeasurements.get(index);
+				measurementBuffer.setCo2(measurementBuffer.getCo2() + measurement.getCo2());
+				measurementBuffer.setHumidity(measurementBuffer.getHumidity() + measurement.getHumidity());
+				measurementBuffer.setTemperature(measurementBuffer.getTemperature() + measurement.getTemperature());
+				measurementBuffer.setMeasureTime(month + "월");
+
+				resultMeasurements.set(index, measurementBuffer);
+
+				bufferSize.set(index, bufferSize.get(index) + 1);
+			}
+
+			for (int i = 0; i < resultMeasurements.size(); i++) {
+				Measurement measurementBuffer = resultMeasurements.get(i);
+				if (bufferSize.get(i) > 0) {
+					measurementBuffer.setCo2(measurementBuffer.getCo2() / bufferSize.get(i));
+					measurementBuffer.setHumidity(measurementBuffer.getHumidity() / bufferSize.get(i));
+					measurementBuffer.setTemperature(measurementBuffer.getTemperature() / bufferSize.get(i));
+				}
+
+				int realMonth = i + startMonth < 13 ? i + startMonth : i + startMonth - 12;
+
+				resultMeasurements.set(i, measurementBuffer);
+			}
+
+		} else if ("date".equals(condition.get("timeCondition"))) {
+			int startDate = Integer.parseInt(condition.get("startTime").split("-")[2].split(" ")[0]);
+
+			Calendar cal = Calendar.getInstance();
+
+			cal.set(
+					Integer.parseInt(condition.get("startTime").split("-")[0]),
+					Integer.parseInt(condition.get("startTime").split("-")[1]), 
+					1);
+
+			int maxDayOfMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+			
+			for (int i = 0; i < maxDayOfMonth; i++) {
+				resultMeasurements.add(new Measurement());
+				bufferSize.add(0);
+			}
+
+			for (Measurement measurement : measurements) {
+				int date = Integer.parseInt(measurement.getMeasureTime().split("-")[2].split(" ")[0]);
+
+				int index = date - startDate < 0 ? date - startDate + maxDayOfMonth : date - startDate;
+				
+				Measurement measurementBuffer = resultMeasurements.get(index);
+
+				measurementBuffer.setCo2(measurementBuffer.getCo2() + measurement.getCo2());
+				measurementBuffer.setHumidity(measurementBuffer.getHumidity() + measurement.getHumidity());
+				measurementBuffer.setTemperature(measurementBuffer.getTemperature() + measurement.getTemperature());
+				measurementBuffer.setMeasureTime(date + "일");
+
+				resultMeasurements.set(index, measurementBuffer);
+
+				bufferSize.set(index, bufferSize.get(index) + 1);
+			}
+
+			for (int i = 0; i < resultMeasurements.size(); i++) {
+				Measurement measurementBuffer = resultMeasurements.get(i);
+				if (bufferSize.get(i) > 0) {
+					measurementBuffer.setCo2(measurementBuffer.getCo2() / bufferSize.get(i));
+					measurementBuffer.setHumidity(measurementBuffer.getHumidity() / bufferSize.get(i));
+					measurementBuffer.setTemperature(measurementBuffer.getTemperature() / bufferSize.get(i));
+				}
+
+				resultMeasurements.set(i, measurementBuffer);
+			}
+		} else {
+			resultMeasurements = measurements;
+		}
+
+		for (int i = 0; i < resultMeasurements.size(); i++) {
+			if (resultMeasurements.get(i).getMeasureTime() == null) {
+				resultMeasurements.remove(i);
+				
+				i--;
+			}
+		}
+		
+		return resultMeasurements;
 	}
 
 	@PostMapping(path = "/record-info", consumes = { "multipart/form-data" })
@@ -198,7 +297,7 @@ public class SmartFarmController {
 		String[] datas = data.split("[:]");
 
 		Measurement measurement = new Measurement();
-		
+
 		measurement.setAgentIpAddress(datas[0]);
 		measurement.setCo2(Integer.valueOf(datas[1]));
 		measurement.setHumidity(Integer.valueOf(datas[2]));
