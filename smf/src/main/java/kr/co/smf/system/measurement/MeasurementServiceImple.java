@@ -29,7 +29,8 @@ public class MeasurementServiceImple implements MeasurementService {
 
 	@Override
 	public List<Measurement> viewMeasurementList(Map<String, String> condition) {
-		return growthMeasureMapper.selectAllGrowthMeasureInfo(condition);
+		List<Measurement> measurements = growthMeasureMapper.selectAllGrowthMeasureInfo(condition);
+		return measurements;
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class MeasurementServiceImple implements MeasurementService {
 
 			thread.start();
 		}
-		
+
 		while (true) {
 			if (measurements.size() == agents.size()) {
 				break;

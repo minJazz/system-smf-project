@@ -188,6 +188,14 @@
 			search();
 		}
 
+		function changeRadio() {
+			if ($('input[name="radio"]:checked').length == 0) {
+				$("#deleteBtn").attr("disabled", true);
+			} else {
+				$("#deleteBtn").attr("disabled", false);
+			}
+		}
+		
 		function getData() {
 			var userPhoneNumber = document.getElementById("phoneNumber").value;
 
@@ -250,12 +258,14 @@
 						+ data[i].agentIpAddress
 						+ "</td>"
 						+ "<th style='text-align: center;'>"
-						+ "<input class='form-check-input' type='radio' value=\"radio/" + data[i].no + "\" id=\"radio/" + data[i].no + "\" name='radio'/>"
+						+ "<input class='form-check-input' type='radio' onchange='changeRadio();' value=\"radio/" + data[i].no + "\" id=\"radio/" + data[i].no + "\" name='radio'/>"
 						+ "</th>" + "</tr>" + "</tbody>"
 			}
 			+"</table>";
 			document.getElementById("table").innerHTML = text;
 			document.getElementById("pageTable").innerHTML = data[0].agentName;
+			
+			changeRadio();
 		}
 	</script>
 

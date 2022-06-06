@@ -145,7 +145,7 @@
 											</div>
 
 											<div class="md-3">
-												<button type="button"
+												<button type="button" id="editButton"
 													class="btn btn-outline-dark waves-effect waves-light"
 													style="float: right; margin-right: 10px;"
 													 onclick="editClick(tableValue)">수정</button>
@@ -252,7 +252,11 @@
 
 		function changeRadio() {
 			if ($('input[name="radio"]:checked').length == 0) {
-			    // do something here
+				$("#editButton").attr("disabled", true);
+				$("#deleteBtn").attr("disabled", true);
+			} else {
+				$("#editButton").attr("disabled", false);
+				$("#deleteBtn").attr("disabled", false);
 			}
 		}
 		
@@ -291,7 +295,7 @@
 								+ "<td>"
 								+ parseData[i].mail
 								+ "</td>"
-								+ "<th><input class='form-check-input' type='radio' value=\"radio/"
+								+ "<th><input class='form-check-input' type='radio' onchange='changeRadio();' value=\"radio/"
 								+ parseData[i].no
 								+ "\" id=\"radio/"
 								+ parseData[i].no

@@ -121,8 +121,7 @@
 													</div>
 													<div>
 														<input type="hidden" name="agentIpAddress"
-															id="agentIpAddress" value="${agent.agentIpAddress}"
-															 />
+															id="agentIpAddress" value="${agent.agentIpAddress}" />
 													</div>
 												</div>
 											</div>
@@ -338,8 +337,23 @@
 									</div>
 
 									<div class="col-sm-12 col-md-12">
-										<div id="chart-container">FusionCharts XT will load
-											here!</div>
+										<div class="row" id="chart-container">FusionCharts XT
+											will load here!</div>
+
+										<div class="row">
+											<div class="col-sm-6 col-md-6"></div>
+
+											<div class="col-sm-2 col-md-2">
+												<select class="form-select" name="timeCondition" id="timeCondition" onchange="measure();">
+													<option value="month" selected>월별</option>
+													<option value="date">일별</option>
+													<option value="hour">시간별</option>
+												</select>
+											</div>
+											<div class="col-sm-4 col-md-4">
+												<input class="form-control" id="conditionDate" type="date" onchange="measure();"/>
+											</div>
+										</div>
 									</div>
 
 								</div>
@@ -383,6 +397,8 @@
 	<script type="text/javascript"
 		src="https://cdn.fusioncharts.com/fusioncharts/latest/themes/fusioncharts.theme.fusion.js"></script>
 	<script type="text/javascript">
+	document.getElementById("conditionDate").value=new Date().toISOString().slice(0, 10);
+	
 	photoCall();
 	measure();
 	
@@ -439,21 +455,38 @@
 	    return '0' + value;
 	}
 	
-	var category = "";
-	
-	var datasetString = "";
-	var dataset = [{}, {}, {}];
-	
 	var startTime;
 	var now;
 	
 	function measure() {
-		now = new Date();
-		let nowFormat = now.getFullYear() + "-" + leftPad(now.getMonth() + 1) + "-" + leftPad(now.getDate());
+		var category = "";
 		
-		startTime = new Date();
-		startTime.setFullYear(startTime.getFullYear() - 1);
+		var datasetString = "";
+		var dataset = [{}, {}, {}];
+		
+		let conditionDate = document.getElementById("conditionDate").valueAsDate;
+		
+		console.log("conditionDate : " + conditionDate);
+		
+		let endTimeFormat = conditionDate.getFullYear() + "-" + leftPad(conditionDate.getMonth() + 1) + "-" + leftPad(conditionDate.getDate());
+		
+		console.log("timeCondition : " + document.getElementById("timeCondition").value);
+		
+		let startTime = conditionDate;
+		
+		if (document.getElementById("timeCondition").value == "month") {
+			startTime.setFullYear(startTime.getFullYear() - 1);
+			startTime.setMonth(startTime.getMonth() + 1);
+		} else if (document.getElementById("timeCondition").value == "date") {
+			startTime.setMonth(startTime.getMonth() - 1);
+			startTime.setDate(startTime.getDate() + 1);
+		} else {
+			startTime.setDate(startTime.getDate() - 1);
+		}
+		
 		let startTimeFormat = startTime.getFullYear() + "-" + leftPad(startTime.getMonth() + 1) + "-" + leftPad(startTime.getDate());
+		
+		console.log("startTimeFormat : " + startTimeFormat);
 		
 		const months = [
 			  'Jan',
@@ -476,7 +509,8 @@
             data: {
             	agentIpAddress : document.getElementById("agentIpAddress").value, 
             	startTime : startTimeFormat,
-            	endTime : nowFormat
+            	endTime : endTimeFormat,
+            	timeCondition : document.getElementById("timeCondition").value
             },
             success: function (rows) {
             	let time = startTime;
