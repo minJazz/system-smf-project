@@ -176,8 +176,6 @@ public class SmartFarmController {
 	@GetMapping(path = "/measurement")
 	@ResponseBody
 	public List<Measurement> viewMeasureInfo(@RequestParam Map<String, String> condition) {
-		System.out.println("view >>> " + condition + "list : " + measurementService.viewMeasurementList(condition));
-
 		return measurementService.viewMeasurementList(condition);
 	}
 
@@ -192,6 +190,7 @@ public class SmartFarmController {
 		String[] datas = data.split("[:]");
 
 		Measurement measurement = new Measurement();
+		
 		measurement.setAgentIpAddress(datas[0]);
 		measurement.setCo2(Integer.valueOf(datas[1]));
 		measurement.setHumidity(Integer.valueOf(datas[2]));

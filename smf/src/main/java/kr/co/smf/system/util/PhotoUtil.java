@@ -27,22 +27,22 @@ public class PhotoUtil {
 
 	public void insertPhoto(MultipartFile multipartFile, Measurement measurement)
 			throws IllegalStateException, IOException {
-		System.out.println("---->>>" + measurement.getMeasureTime());
 		
 		String[] time = measurement.getMeasureTime().split("[ ]");
-		System.out.println("---->>>" + time[0] + "---->>>" + time[1]);
 		
-//		LocalDate measureDate = LocalDate.parse(measurement.getMeasureTime(),
-//				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
-//
-//		LocalDateTime measureTime = LocalDateTime.parse(measurement.getMeasureTime(),
-//				DateTimeFormatter.ofPattern("yyyy-MM-dd-HH"));
-
-		String directoryPath = servletContext.getRealPath("/image") + File.separator + measurement.getAgentIpAddress() + File.separator + time[0];
+		String directoryPath = servletContext.getRealPath("/image") + File.separator + measurement.getAgentIpAddress();
 
 		File directory = new File(directoryPath);
 
-		if (!directory.isDirectory()) {
+		if (!directory.exists()) {
+			directory.mkdir();
+		}
+		
+		directoryPath = directory + (File.separator + time[0]);
+		
+		directory = new File(directoryPath);
+		
+		if (!directory.exists()) {
 			directory.mkdir();
 		}
 
