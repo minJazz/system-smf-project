@@ -115,7 +115,7 @@
 									</div>
 
 									<br />
-									<form class="custom-validation" action="#">
+									<form class="custom-validation" onsubmit="return false;">
 										<div id=settingTable class="left-box">
 											<table class="table mb-0">
 												<thead class="table-light">
@@ -166,7 +166,7 @@
 													<button type="submit"
 														class="btn btn-outline-dark waves-effect waves-light"
 														onclick="updateSetting()" style="margin-right:6px;">갱신</button>
-													<button type="button" value="삭제" id="deleteBtn"
+													<button type="submit" value="삭제" id="deleteBtn"
 														data-bs-toggle="modal"
 														data-bs-target=".bs-example-modal-center"
 														class="btn btn-outline-dark waves-effect waves-light"
@@ -239,11 +239,10 @@
 			var temperature = document.getElementById('temperatureText').value;
 			var humidity = document.getElementById('humidityText').value;
 			var co2 = document.getElementById('co2Text').value;
+			var xmlRequest = new XMLHttpRequest();
 
 			if (settingName != "" && temperature != "" && humidity != ""
 					&& co2 != "") {
-				xmlRequest = new XMLHttpRequest();
-
 				var setting = {
 					userPhoneNumber : '${user.phoneNumber}',
 					settingName : document.getElementById('nameText').value,
@@ -252,17 +251,39 @@
 					co2 : document.getElementById('co2Text').value
 				};
 				var settingJson = JSON.stringify(setting);
+				
+				xmlRequest.open("PUT", "/setting", false);
+				xmlRequest.onreadystatechange = function() {
+					if (xmlRequest.status == 200) {
+						var text = xmlRequest.responseText;
+						var json = JSON.parse(text);
+					}
 
-				xmlRequest.open("PUT", "/setting", true);
-				xmlRequest.onreadystatechange = getUpdateSettingList;
+					var settingName = document.getElementById('nameText').value;
+
+					var tag = "<select class='form-select' name = 'settingName'"
+							+ "onchange= 'sendSettingName(this.value);'>"
+							+ "<option value = 'add'>Select</option>"
+
+					for (var i = 0; i < json.length; i++) {
+						if (settingName == json[i].settingName) {
+							tag += "<option selected value="+json[i].settingName+ ">"
+									+ json[i].settingName + "</option>"
+						} else {
+							tag += "<option value="+json[i].settingName+ ">"
+									+ json[i].settingName + "</option>"
+						}
+					}
+					tag += "</select>"
+					document.getElementById("settingList").innerHTML = tag;
+				};
+				
 				xmlRequest.setRequestHeader("Content-Type",
 						"application/json;charset=UTF-8");
 				xmlRequest.send(settingJson);
 			}
 		}
-	</script>
 
-	<script>
 		function deleteSetting() {
 			xmlRequest = new XMLHttpRequest();
 
@@ -275,45 +296,17 @@
 			};
 			var settingJson = JSON.stringify(setting);
 
-			xmlRequest.open("DELETE", "/setting", true);
+			xmlRequest.open("DELETE", "/setting", false);
 			xmlRequest.onreadystatechange = getDeleteSettingList;
 			xmlRequest.setRequestHeader("Content-Type",
 					"application/json;charset=UTF-8");
 			xmlRequest.send(settingJson);
 		}
-	</script>
 
-	<script>
 		function getUpdateSettingList() {
-			if (xmlRequest.status == 200) {
-				var text = xmlRequest.responseText;
-				var json = JSON.parse(text);
-			}
-
-			var settingName = document.getElementById('nameText').value;
-
-			var tag = "<select class='form-select' name = 'settingName'"
-					+ "onchange= 'sendSettingName(this.value);'>"
-					+ "<option value = 'add'>Select</option>"
-
-			for (var i = 0; i < json.length; i++) {
-				console.log(settingName);
-				console.log(json[i].settingName);
-				console.log(settingName == json[i].settingName);
-				if (settingName == json[i].settingName) {
-					tag += "<option selected value="+json[i].settingName+ ">"
-							+ json[i].settingName + "</option>"
-				} else {
-					tag += "<option value="+json[i].settingName+ ">"
-							+ json[i].settingName + "</option>"
-				}
-			}
-			tag += "</select>"
-			document.getElementById("settingList").innerHTML = tag;
+			
 		}
-	</script>
 
-	<script>
 		function getDeleteSettingList() {
 			if (xmlRequest.status == 200) {
 				var text = xmlRequest.responseText;
@@ -333,73 +326,30 @@
 			document.getElementById("settingList").innerHTML = tag;
 			sendSettingName("add");
 		}
-	</script>
 
-
-	<script>
 		function sendSettingName(settingName) {
 			xmlRequest = new XMLHttpRequest();
 			var num = '${user.phoneNumber}';//'' 안 붙이면 번호의 맨 앞자리 0이 사라지는 현상이 발생
 			var numString = num.toString();
 
 			xmlRequest.open("GET", "/setting/?userPhoneNumber=" + numString
-					+ "&settingName=" + settingName, true);
-			xmlRequest.onreadystatechange = getSettingData;
+					+ "&settingName=" + settingName, false);
+			xmlRequest.onreadystatechange = function() {
+				if (xmlRequest.status == 200) {
+					let text = xmlRequest.responseText;
+					let responseJson = JSON.parse(text);
+					
+					document.getElementById("nameText").value= responseJson.settingName.toString();
+					document.getElementById("temperatureText").value= responseJson.temperature.toString();
+					document.getElementById("humidityText").value= responseJson.humidity.toString();
+					document.getElementById("co2Text").value= responseJson.co2.toString();
+				}
+			};
 			xmlRequest.setRequestHeader("Content-Type",
 					"application/json;charset=UTF-8");
 			xmlRequest.send();
 		}
 
-		function getSettingData() {
-			console.log("request : " + xmlRequest.responseText);
-			var text = xmlRequest.responseText
-			var responseJson = JSON.parse(text);
-
-			var tag = "";
-			tag += "<table class='table mb-0'>"
-					+ "<thead class='table-light'>"
-					+ "<tr>"
-					+ "<th>생장환경 설정 명</th>"
-					+ "<th>온도</th>"
-					+ "<th>습도</th>"
-					+ "<th>CO2 농도</th>"
-					+ "</tr>"
-					+ "</thead>"
-					+ "<tbody>"
-					+ "<tr>"
-					+ "<td>"
-					+ "<div>"
-					+ '<input type="text"'
-					+	' class="form-control" required'
-					+	' placeholder="Type something" name="settingName"'
-					+	' id="nameText" value="'+ responseJson.settingName + '"/>'
-					+ '</div>'
-					+ "</td>"
-					+ "<td>"
-					+ "<div>"
-					+ '<input data-parsley-type="number" type="text"'
-					+	' class="form-control" required'
-					+	' placeholder="Enter only numbers" name="temperature"'
-					+	' id="temperatureText" value="'+ responseJson.temperature + '"/>'
-					+ '</div>'
-					+ "</td>"
-					+ "<td>"
-					+ "<div>"
-					+ '<input data-parsley-type="number" type="text"'
-					+	' class="form-control" required'
-					+	' placeholder="Enter only numbers" name="humidity"'
-					+	' id="humidityText" value="'+ responseJson.humidity + '"/>'
-					+ '</div>'
-					+ "</td>"
-					+ "<td>"
-					+ "<div>"
-					+ '<input data-parsley-type="number" type="text"'
-					+	' class="form-control" required'
-					+	' placeholder="Enter only numbers" name="co2"'
-					+	' id="co2Text" value="'+ responseJson.co2 + '"/>'
-					+ '</div>' + "</td>" + "</tr>" + "</tbody>" + "</table>";
-			document.getElementById("settingTable").innerHTML = tag;
-		}
 	</script>
 
 	<!-- JAVASCRIPT -->

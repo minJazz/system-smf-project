@@ -94,7 +94,7 @@
 							<div class="card">
 								<div class="card-body">
 									<div class="col-sm-12 col-md-12 row" style="text-align: right">
-									<div class="col-sm-12 col-md-5"></div>
+										<div class="col-sm-12 col-md-5"></div>
 										<label class="col-md-3 col-form-label">스마트 팜 이름 : </label>
 										<div class="col-sm-12 col-md-3">
 											<input class="form-control" type="search"
@@ -108,7 +108,15 @@
 									</div>
 									<br />
 
-									<div class="table-responsive" id="table"></div>
+									<div class="table-responsive" id="table">
+										<div style="text-align: center;">
+											<br/>
+											<div class="spinner-border text-danger m-1" role="status"
+												style="float: center;">
+												<span class="sr-only">Loading...</span>
+											</div>
+										</div>
+									</div>
 
 									<br /> <br />
 
@@ -171,10 +179,11 @@
 			}
 
 			var tag = "<table class='table mb-0'>"
-					+ "<thead class='table-light' style='text-align:center;'>" + "<tr>" + "<th>번호</th>"
-					+ "<th>스마트 팜 이름</th>" + "<th>구분</th>" + "<td>온도 (°C)</td>"
-					+ "<th>습도 (%)</th>" + "<th>CO2 농도 (ppm)</th>" + "</tr>"
-					+ "</thead>" + "<tbody id = 'tableValue'>";
+					+ "<thead class='table-light' style='text-align:center;'>"
+					+ "<tr>" + "<th>번호</th>" + "<th>스마트 팜 이름</th>"
+					+ "<th>구분</th>" + "<td>온도 (°C)</td>" + "<th>습도 (%)</th>"
+					+ "<th>CO2 농도 (ppm)</th>" + "</tr>" + "</thead>"
+					+ "<tbody id = 'tableValue'>";
 			for (var i = 0; i < list.length; i++) {
 				if (list[i].agentName == null) {
 					break;
@@ -185,12 +194,18 @@
 						+ "</td>"
 						+ "<td rowspan='2'><a href='/smartfarm/" + list[i].agentNo + "'>"
 						+ list[i].agentName + "</a>" + "</td>" + "<td>설정</td>"
-						+ "<td style='text-align:center;'>" + list[i].settingTemperature + "</td>"
-						+ "<td style='text-align:center;'>" + list[i].settingHumidity + "</td>"
-						+ "<td style='text-align:center;'>"+ list[i].settingCo2 + "</td>" + "</tr>" + "<tr>"
-						+ "<td>현재</td>" + "<td style='text-align:center;'>" + list[i].measureTemperature
-						+ "</td>" + "<td style='text-align:center;'>" + list[i].measureHumidity + "</td>"
-						+ "<td style='text-align:center;'>" + list[i].measureCo2 + "</td>" + "</tr>";
+						+ "<td style='text-align:center;'>"
+						+ list[i].settingTemperature + "</td>"
+						+ "<td style='text-align:center;'>"
+						+ list[i].settingHumidity + "</td>"
+						+ "<td style='text-align:center;'>"
+						+ list[i].settingCo2 + "</td>" + "</tr>" + "<tr>"
+						+ "<td>현재</td>" + "<td style='text-align:center;'>"
+						+ list[i].measureTemperature + "</td>"
+						+ "<td style='text-align:center;'>"
+						+ list[i].measureHumidity + "</td>"
+						+ "<td style='text-align:center;'>"
+						+ list[i].measureCo2 + "</td>" + "</tr>";
 				+"</tbody>"
 			}
 
