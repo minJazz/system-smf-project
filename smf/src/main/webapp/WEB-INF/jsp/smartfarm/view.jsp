@@ -444,6 +444,7 @@
 	var dd = date.getDate() > 9 ? date.getDate() : '0' + date.getDate();
 	
 	document.getElementById("conditionDate").value = yyyy+"-"+mm+"-"+dd;
+	document.getElementById("photoDate").value = yyyy+"-"+mm+"-"+dd;
 	
 	photoCall();
 	measure();
