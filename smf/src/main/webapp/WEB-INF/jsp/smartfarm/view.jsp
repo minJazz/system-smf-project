@@ -448,9 +448,13 @@
 	photoCall();
 	measure();
 	
+	console.log(document.getElementById("settingName").value);
+	
 	if (document.getElementById("settingName").value == "FAIL_TO_REQUEST_NOW_GROWTH_SETTING") {
 		$("#controlBtn").attr("disabled", true);
-	}
+	} else {
+		$("#controlBtn").removeAttr("disabled");
+	} 
 	
 	function photoCall() {
 		console.log("time : " + document.getElementById("photoTime").value);

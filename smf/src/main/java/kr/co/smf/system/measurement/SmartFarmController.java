@@ -149,9 +149,9 @@ public class SmartFarmController {
 			setting = systemUtil.requestNowGrowthSetting(agent);
 		} catch (IOException e) {
 			System.out.println("fail to requestNoGrowthSetting : " + e.getMessage());
-		} finally {
-			setting.setSettingName("FAIL_TO_REQUEST_NOW_GROWTH_SETTING");
 			
+			setting.setSettingName("FAIL_TO_REQUEST_NOW_GROWTH_SETTING");
+		} finally {
 			mav.addObject("setting", setting);
 		}
 
