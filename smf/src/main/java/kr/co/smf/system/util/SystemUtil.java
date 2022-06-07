@@ -96,7 +96,7 @@ public class SystemUtil {
 		JSONObject jsonResponse = new JSONObject(responseBody.string());
 		
 		if (!jsonResponse.getString("code").equals("200")) {
-			System.out.println("제어 요청 오류 : " + jsonResponse.getString("message"));	//TODO Logger 추가 시 변경 요망
+			System.out.println("제어 요청 오류 : " + jsonResponse.getString("message"));
 		}
 	}
 	
